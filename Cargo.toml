@@ -6,6 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+# Command line
+clap = { version = "4.0", features = ["derive"] }
+
 # Logging crates and error handling
 log = "0.4"
 env_logger = "0.9"
