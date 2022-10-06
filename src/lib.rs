@@ -1,5 +1,5 @@
-// mod db;
+mod db;
 
-fn main() {
+pub async fn main() {
     println!("Hello World");
 }

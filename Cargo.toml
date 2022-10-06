@@ -30,7 +30,7 @@ time = "0.3"
 version = "0.6"
 features = [
   "runtime-tokio-native-tls",
-  "postgresql",
+  "postgres",
   "json",
   "uuid",
   "time"

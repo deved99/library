@@ -1,5 +1,4 @@
-
 #[tokio::main]
-fn main() {
-    crate::main();
+async fn main() {
+    book::main().await;
 }
