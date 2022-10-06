@@ -1,0 +1,5 @@
+# Compile directory
+/target
+
+# File used to store secrets
+.env
