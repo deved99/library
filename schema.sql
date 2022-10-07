@@ -18,7 +18,7 @@ CREATE TABLE books(
   CONSTRAINT uuid_books PRIMARY KEY ( uuid ),
   title TEXT NOT NULL,
   year SMALLINT NOT NULL,
-  state reading_state NOT NULL
+  state reading_state NOT NULL DEFAULT 'to_read'
 );
 
 CREATE TABLE authors(
