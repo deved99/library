@@ -12,7 +12,7 @@ mod book;
 // mod tag;
 
 // Re export
-use super::{Result,Error};
+use crate::{Error, Result};
 pub use book::Book;
 
 //// Functions
@@ -30,4 +30,3 @@ pub async fn get_pool() -> Result<&'static PgPool> {
     }
     Ok(DATABASE_POOL.get().unwrap())
 }
-
