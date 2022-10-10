@@ -9,6 +9,7 @@ edition = "2021"
 
 # Command line
 clap = { version = "4.0", features = ["derive"] }
+prettytable-rs = "^0.9"
 
 # Logging crates and error handling
 log = "0.4"

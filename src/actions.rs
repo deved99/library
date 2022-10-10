@@ -3,9 +3,7 @@ use crate::{Error, Result};
 
 pub async fn book_list() -> Result<()> {
     let books = db::Book::list().await?;
-    for book in books {
-        println!("{:?}", book)
-    }
+    db::print_table(&books);
     Ok(())
 }
 

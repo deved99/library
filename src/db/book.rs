@@ -1,4 +1,4 @@
-use super::{get_pool, Result};
+use super::{get_pool, Result, AsRow};
 use sqlx;
 use uuid::Uuid;
 
@@ -56,6 +56,22 @@ impl Book {
             .execute(db)
             .await?;
         Ok(())
+    }
+}
+
+impl AsRow for Book {
+    fn titles() -> Vec<String> {
+        ["title", "year", "state"]
+            .iter()
+            .map(|x| x.to_string())
+            .collect()
+    }
+    fn columns(&self) -> Vec<String> {
+        vec![
+            format!("{}", self.title),
+            format!("{}", self.year),
+            format!("{:?}", self.state),
+        ]
     }
 }
 
