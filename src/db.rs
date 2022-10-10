@@ -7,13 +7,16 @@ use sqlx::{
     postgres::{PgPool, PgPoolOptions},
 };
 
+mod author;
 mod book;
-// mod author;
 // mod tag;
+mod links;
 
 // Re export
 use crate::{Error, Result};
+pub use author::Author;
 pub use book::Book;
+pub use links::AuthorBook;
 
 //// Functions
 

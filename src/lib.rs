@@ -11,5 +11,9 @@ pub use error_handling::{Error, Result};
 
 pub async fn main() {
     let args = Cli::parse();
-    args.command.execute().await.unwrap();
+    let res = args.command.execute().await;
+    if let Err(ref e) = res {
+        println!("{}\n", e);
+        res.unwrap();
+    }
 }

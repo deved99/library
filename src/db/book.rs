@@ -23,6 +23,9 @@ impl Book {
         Ok(result)
     }
     // Read
+    pub fn uuid(&self) -> Uuid {
+        self.uuid
+    }
     pub async fn list() -> Result<Vec<Self>> {
         let db = get_pool().await?;
         let results: Vec<Self> = sqlx::query_as("SELECT * FROM books;").fetch_all(db).await?;
