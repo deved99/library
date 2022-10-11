@@ -77,7 +77,7 @@ impl AsRow for Book {
 
 #[derive(Debug, sqlx::Type, Clone, Copy)]
 #[sqlx(type_name = "reading_state", rename_all = "snake_case")]
-enum ReadingState {
+pub enum ReadingState {
     Finished,
     ToRead,
     Reading,

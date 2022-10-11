@@ -46,6 +46,8 @@ pub trait AsRow {
 
 pub fn print_table<T: AsRow>(rows: &Vec<T>) {
     let mut table = prettytable::Table::new();
+    let format = *prettytable::format::consts::FORMAT_BOX_CHARS;
+    table.set_format(format);
     // Title
     let titles = T::titles();
     table.add_row(prettytable::Row::from(&titles));
