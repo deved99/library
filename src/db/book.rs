@@ -1,5 +1,6 @@
 use super::{get_pool, AsRow, Author, Result};
 use sqlx;
+use time::Date;
 use uuid::Uuid;
 
 #[derive(Debug, sqlx::FromRow)]
@@ -7,14 +8,15 @@ pub struct Book {
     uuid: Uuid,
     title: String,
     year: i16,
-    state: ReadingState,
+    date_started: Option<Date>,
+    date_finished: Option<Date>
 }
 impl Book {
     // Create
     pub async fn new(title: &str, year: i16) -> Result<Self> {
         let db = get_pool().await?;
         let result: Self = sqlx::query_as(
-            "INSERT INTO books (title, year) VALUES ($1, $2) RETURNING uuid,title,year,state",
+            "INSERT INTO books (title, year) VALUES ($1, $2) RETURNING uuid,title,year,date_started,date_finished",
         )
         .bind(title)
         .bind(year)
@@ -33,26 +35,27 @@ impl Book {
     }
     // Update
     //// state change
-    pub async fn read(&mut self) -> Result<()> {
-        self.state = ReadingState::Reading;
-        self.update().await
-    }
-    pub async fn finish(&mut self) -> Result<()> {
-        self.state = ReadingState::Finished;
-        self.update().await
-    }
-    pub async fn reset(&mut self) -> Result<()> {
-        self.state = ReadingState::ToRead;
-        self.update().await
-    }
+    // pub async fn read(&mut self) -> Result<()> {
+    //     self.state = ReadingState::Reading;
+    //     self.update().await
+    // }
+    // pub async fn finish(&mut self) -> Result<()> {
+    //     self.state = ReadingState::Finished;
+    //     self.update().await
+    // }
+    // pub async fn reset(&mut self) -> Result<()> {
+    //     self.state = ReadingState::ToRead;
+    //     self.update().await
+    // }
     //// Helpers
     async fn update(&self) -> Result<()> {
         let db = get_pool().await?;
-        sqlx::query("UPDATE books SET title = $2, year = $3, state = $4 WHERE uuid = $1")
+        sqlx::query("UPDATE books SET title = $2, year = $3, date_started = $4, date_finished = $5 WHERE uuid = $1")
             .bind(self.uuid)
             .bind(&self.title)
             .bind(self.year)
-            .bind(self.state)
+            .bind(self.date_started)
+            .bind(self.date_finished)
             .execute(db)
             .await?;
         Ok(())
@@ -61,7 +64,7 @@ impl Book {
 
 impl AsRow for Book {
     fn titles() -> Vec<String> {
-        ["title", "year", "state"]
+        ["title", "year", "date_started", "date_finished"]
             .iter()
             .map(|x| x.to_string())
             .collect()
@@ -70,7 +73,8 @@ impl AsRow for Book {
         vec![
             format!("{}", self.title),
             format!("{}", self.year),
-            format!("{:?}", self.state),
+            format!("{:?}", self.date_started),
+            format!("{:?}", self.date_finished),
         ]
     }
 }

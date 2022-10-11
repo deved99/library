@@ -18,7 +18,9 @@ CREATE TABLE books(
   CONSTRAINT uuid_books PRIMARY KEY ( uuid ),
   title TEXT NOT NULL,
   year SMALLINT NOT NULL,
-  state reading_state NOT NULL DEFAULT 'to_read'
+  -- state reading_state NOT NULL DEFAULT 'to_read'
+  date_started DATE,
+  date_finished DATE
 );
 
 CREATE TABLE authors(
@@ -35,7 +37,7 @@ CREATE TABLE authors_books(
 
 CREATE TABLE tags(
   name TEXT NOT NULL,
-  CONSTRAINT name_tags PRIMARY KEY ( name ),
+  CONSTRAINT name_tags PRIMARY KEY ( name )
 );
 
 CREATE TABLE tags_books(
