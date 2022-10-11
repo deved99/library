@@ -33,7 +33,7 @@ impl TagBook {
     pub async fn new(tag: &str, book: Uuid) -> Result<Self> {
         let db = get_pool().await?;
         let link: Self = sqlx::query_as(
-            "INSERT INTO tags_books (author,book)
+            "INSERT INTO tags_books (tag,book)
              VALUES ($1, $2)
              RETURNING tag,book",
         )

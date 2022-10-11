@@ -22,7 +22,7 @@ pub enum Command {
 impl Command {
     pub async fn execute(self) -> Result<()> {
         match self {
-            Self::List => actions::reading_list().await,
+            Self::List => actions::book_list().await,
             Self::Book(b) => b.execute().await,
             Self::Author(a) => a.execute().await,
         }

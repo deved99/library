@@ -1,4 +1,5 @@
 use super::{get_pool, AsRow, Author, Result};
+use itertools::Itertools;
 use sqlx;
 use time::Date;
 use uuid::Uuid;
@@ -9,7 +10,7 @@ pub struct Book {
     title: String,
     year: i16,
     date_started: Option<Date>,
-    date_finished: Option<Date>
+    date_finished: Option<Date>,
 }
 impl Book {
     // Create
@@ -85,4 +86,41 @@ pub enum ReadingState {
     Finished,
     ToRead,
     Reading,
+}
+
+#[derive(Debug, sqlx::FromRow)]
+pub struct BookComplete {
+    uuid: Uuid,
+    title: String,
+    authors: Vec<String>,
+    tags: Vec<Option<String>>,
+    year: i16,
+}
+impl BookComplete {
+    pub async fn list() -> Result<Vec<BookComplete>> {
+        let db = get_pool().await?;
+        let query = include_str!("SQL/book-complete_list.sql");
+        let books = sqlx::query_as(query).fetch_all(db).await?;
+        return Ok(books)
+    }
+    pub fn tags(&self) -> String {
+        self.tags.iter().flatten().join(", ")
+    }
+}
+
+impl AsRow for BookComplete {
+    fn titles() -> Vec<String> {
+        ["title", "author", "year", "tags"]
+            .iter()
+            .map(|x| x.to_string())
+            .collect()
+    }
+    fn columns(&self) -> Vec<String> {
+        vec![
+            format!("{}", self.title),
+            format!("{}", self.authors.join(", ")),
+            format!("{}", self.year),
+            format!("{}", self.tags()),
+        ]
+    }
 }

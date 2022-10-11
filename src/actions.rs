@@ -3,14 +3,8 @@ use crate::{Error, Result};
 
 use std::ops::Deref;
 
-pub async fn reading_list() -> Result<()> {
-    let reading_list = db::ReadingList::get().await?;
-    db::print_table(&reading_list);
-    Ok(())
-}
-
 pub async fn book_list() -> Result<()> {
-    let books = db::Book::list().await?;
+    let books = db::BookComplete::list().await?;
     db::print_table(&books);
     Ok(())
 }
