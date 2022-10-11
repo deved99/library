@@ -1,4 +1,4 @@
-use super::{get_pool, Result, AsRow};
+use super::{get_pool, AsRow, Author, Result};
 use sqlx;
 use uuid::Uuid;
 

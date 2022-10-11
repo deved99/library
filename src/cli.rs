@@ -22,7 +22,7 @@ pub enum Command {
 impl Command {
     pub async fn execute(self) -> Result<()> {
         match self {
-            Self::List => actions::book_list().await,
+            Self::List => actions::reading_list().await,
             Self::Book(b) => b.execute().await,
             Self::Author(a) => a.execute().await,
         }
@@ -41,6 +41,8 @@ pub enum Book {
         author: String,
         #[arg(long)]
         year: i16,
+        #[arg(long)]
+        tag: Vec<String>,
     },
 }
 impl Book {
@@ -51,7 +53,8 @@ impl Book {
                 title,
                 year,
                 author,
-            } => actions::book_insert(&title, &author, year).await,
+                tag,
+            } => actions::book_insert(&title, &author, year, &tag).await,
         }
     }
 }

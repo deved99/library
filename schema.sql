@@ -34,12 +34,11 @@ CREATE TABLE authors_books(
 );
 
 CREATE TABLE tags(
-  uuid UUID NOT NULL DEFAULT uuid_generate_v4(),
-  CONSTRAINT uuid_tags PRIMARY KEY ( uuid ),
-  name TEXT
+  name TEXT NOT NULL,
+  CONSTRAINT name_tags PRIMARY KEY ( name ),
 );
 
 CREATE TABLE tags_books(
-  tag UUID NOT NULL REFERENCES tags (uuid),
+  tag TEXT NOT NULL REFERENCES tags (name),
   book UUID NOT NULL REFERENCES books (uuid)
 );

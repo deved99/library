@@ -1,13 +1,26 @@
 use crate::db;
 use crate::{Error, Result};
 
+use std::ops::Deref;
+
+pub async fn reading_list() -> Result<()> {
+    let reading_list = db::ReadingList::get().await?;
+    db::print_table(&reading_list);
+    Ok(())
+}
+
 pub async fn book_list() -> Result<()> {
     let books = db::Book::list().await?;
     db::print_table(&books);
     Ok(())
 }
 
-pub async fn book_insert(title: &str, author: &str, year: i16) -> Result<()> {
+pub async fn book_insert<T: Deref<Target = str>>(
+    title: &str,
+    author: &str,
+    year: i16,
+    tags: &[T],
+) -> Result<()> {
     let artists = db::Author::find(author).await?;
     let author = match artists.len() {
         1 => &artists[0],
@@ -21,9 +34,17 @@ pub async fn book_insert(title: &str, author: &str, year: i16) -> Result<()> {
     let book = db::Book::new(title, year).await?;
     println!("Inserted:");
     println!("{:?}", book);
-    let link = db::AuthorBook::new(author.uuid(), book.uuid()).await?;
-    println!("Linked:");
-    println!("{:?}", link);
+    // Create links
+    // // Author
+    let author_link = db::AuthorBook::new(author.uuid(), book.uuid()).await?;
+    // // Tag
+    println!("Linked artist:\n {:?}", author_link);
+    println!("Linking tags:");
+    for tag in tags {
+        db::Tag::find_or_create(tag).await?;
+        let link = db::TagBook::new(tag, book.uuid()).await?;
+        println!("{:?}", &link);
+    }
     Ok(())
 }
 

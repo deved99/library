@@ -11,14 +11,17 @@ use sqlx::{
 
 mod author;
 mod book;
-// mod tag;
 mod links;
+mod reading_list;
+mod tag;
 
 // Re export
 use crate::{Error, Result};
 pub use author::Author;
 pub use book::Book;
-pub use links::AuthorBook;
+pub use links::{AuthorBook, TagBook};
+pub use reading_list::ReadingList;
+pub use tag::Tag;
 
 //// Functions
 
