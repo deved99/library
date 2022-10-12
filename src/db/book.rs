@@ -93,7 +93,7 @@ pub struct BookComplete {
     uuid: Uuid,
     title: String,
     authors: Vec<String>,
-    tags: Vec<Option<String>>,
+    tags: Vec<String>,
     year: i16,
 }
 impl BookComplete {
@@ -102,9 +102,6 @@ impl BookComplete {
         let query = include_str!("SQL/book-complete_list.sql");
         let books = sqlx::query_as(query).fetch_all(db).await?;
         return Ok(books)
-    }
-    pub fn tags(&self) -> String {
-        self.tags.iter().flatten().join(", ")
     }
 }
 
@@ -118,9 +115,9 @@ impl AsRow for BookComplete {
     fn columns(&self) -> Vec<String> {
         vec![
             format!("{}", self.title),
-            format!("{}", self.authors.join(", ")),
+            format!("{:?}", self.authors),
             format!("{}", self.year),
-            format!("{}", self.tags()),
+            format!("{:?}", &self.tags),
         ]
     }
 }
