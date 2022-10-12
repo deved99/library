@@ -4,6 +4,18 @@ use clap::{Args, Parser, Subcommand};
 
 #[derive(Parser)]
 pub struct Cli {
+    /// Print output in json format
+    #[arg(long)]
+    pub json: bool,
+
+    /// Don't ask for interaction (default if stdin != tty)
+    #[arg(long)]
+    pub unattended: bool,
+
+    /// Increase output verbosity
+    #[arg(short, long)]
+    pub verbose: bool,
+
     #[command(subcommand)]
     pub command: Command,
 }
@@ -12,10 +24,16 @@ pub struct Cli {
 pub enum Command {
     /// List books in the reading list
     List,
+
+    /// Actions related to a book
     #[command(subcommand)]
     Book(Book),
+
+    /// Actions related to an author
     #[command(subcommand)]
     Author(Author),
+
+    /// Actions related to a tag
     #[command(subcommand)]
     Tag(Tag),
 }
