@@ -24,12 +24,11 @@ impl Author {
     }
     pub async fn find(name: &str) -> Result<Vec<Self>> {
         let db = get_pool().await?;
-        let result: Vec<Self> = sqlx::query_as(
-            "SELECT uuid,name,nationality FROM authors WHERE name = $1",
-        )
-        .bind(name)
-        .fetch_all(db)
-        .await?;
+        let result: Vec<Self> =
+            sqlx::query_as("SELECT uuid,name,nationality FROM authors WHERE name = $1")
+                .bind(name)
+                .fetch_all(db)
+                .await?;
         Ok(result)
     }
     // Read
@@ -61,7 +60,7 @@ impl Author {
 pub struct AuthorComplete {
     name: String,
     nationality: String,
-    books: Vec<String>
+    books: Vec<String>,
 }
 
 impl AuthorComplete {
@@ -69,7 +68,7 @@ impl AuthorComplete {
         let db = get_pool().await?;
         let query = include_str!("SQL/author-complete_list.sql");
         let books = sqlx::query_as(query).fetch_all(db).await?;
-        return Ok(books)
+        return Ok(books);
     }
 }
 

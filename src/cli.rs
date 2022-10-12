@@ -22,7 +22,7 @@ pub enum Command {
 impl Command {
     pub async fn execute(self) -> Result<()> {
         match self {
-            Self::List => actions::book_list().await,
+            Self::List => actions::book::list().await,
             Self::Book(b) => b.execute().await,
             Self::Author(a) => a.execute().await,
             Self::Tag(t) => t.execute().await,
@@ -49,13 +49,13 @@ pub enum Book {
 impl Book {
     pub async fn execute(self) -> Result<()> {
         match self {
-            Self::List => actions::book_list().await,
+            Self::List => actions::book::list().await,
             Self::Insert {
                 title,
                 year,
                 author,
                 tag,
-            } => actions::book_insert(&title, &author, year, &tag).await,
+            } => actions::book::insert(&title, &author, year, &tag).await,
         }
     }
 }
@@ -75,20 +75,20 @@ pub enum Author {
 impl Author {
     pub async fn execute(self) -> Result<()> {
         match self {
-            Self::List => actions::author_list().await,
-            Self::Insert { name, lang } => actions::author_insert(&name, &lang).await,
+            Self::List => actions::author::list().await,
+            Self::Insert { name, lang } => actions::author::insert(&name, &lang).await,
         }
     }
 }
 
 #[derive(Subcommand)]
 pub enum Tag {
-    List
+    List,
 }
 impl Tag {
     pub async fn execute(self) -> Result<()> {
         match self {
-            Self::List => actions::tag_list().await,
+            Self::List => actions::tag::list().await,
         }
     }
 }

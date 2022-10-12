@@ -1,7 +1,12 @@
-mod actions;
 mod cli;
 mod db;
 mod error_handling;
+
+mod actions {
+    pub mod book;
+    pub mod author;
+    pub mod tag;
+}
 
 use clap::Parser;
 use cli::Cli;

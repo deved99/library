@@ -1,6 +1,6 @@
-use std::include_str;
 use super::{get_pool, AsRow, Result};
 use sqlx;
+use std::include_str;
 
 #[derive(sqlx::FromRow, Debug)]
 pub struct Tag {
@@ -32,11 +32,10 @@ impl Tag {
     }
 }
 
-
 #[derive(sqlx::FromRow, Debug)]
 pub struct TagComplete {
     tag: String,
-    books: Vec<String>
+    books: Vec<String>,
 }
 impl TagComplete {
     pub async fn list() -> Result<Vec<Self>> {
@@ -49,15 +48,9 @@ impl TagComplete {
 
 impl AsRow for TagComplete {
     fn titles() -> Vec<String> {
-        ["tag", "books"]
-            .iter()
-            .map(|x| x.to_string())
-            .collect()
+        ["tag", "books"].iter().map(|x| x.to_string()).collect()
     }
     fn columns(&self) -> Vec<String> {
-        vec![
-            format!("{}", self.tag),
-            format!("{:?}", &self.books),
-        ]
+        vec![format!("{}", self.tag), format!("{:?}", &self.books)]
     }
 }

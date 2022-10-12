@@ -101,7 +101,7 @@ impl BookComplete {
         let db = get_pool().await?;
         let query = include_str!("SQL/book-complete_list.sql");
         let books = sqlx::query_as(query).fetch_all(db).await?;
-        return Ok(books)
+        return Ok(books);
     }
 }
 
