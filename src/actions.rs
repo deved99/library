@@ -3,6 +3,8 @@ use crate::{Error, Result};
 
 use std::ops::Deref;
 
+// Book related 
+
 pub async fn book_list() -> Result<()> {
     let books = db::BookComplete::list().await?;
     db::print_table(&books);
@@ -42,8 +44,24 @@ pub async fn book_insert<T: Deref<Target = str>>(
     Ok(())
 }
 
+// Author related //
+
+pub async fn author_list() -> Result<()> {
+    let authors = db::AuthorComplete::list().await?;
+    db::print_table(&authors);
+    Ok(())
+}
+
 pub async fn author_insert(name: &str, lang: &str) -> Result<()> {
     let book = db::Author::new(name, lang).await?;
     println!("{:?}", book);
+    Ok(())
+}
+
+
+// Tag related //
+pub async fn tag_list() -> Result<()> {
+    let tags = db::TagComplete::list().await?;
+    db::print_table(&tags);
     Ok(())
 }

@@ -12,12 +12,12 @@ pub struct Cli {
 pub enum Command {
     /// List books in the reading list
     List,
-    /// Book related actions
     #[command(subcommand)]
     Book(Book),
-    /// Author related actions
     #[command(subcommand)]
     Author(Author),
+    #[command(subcommand)]
+    Tag(Tag),
 }
 impl Command {
     pub async fn execute(self) -> Result<()> {
@@ -25,6 +25,7 @@ impl Command {
             Self::List => actions::book_list().await,
             Self::Book(b) => b.execute().await,
             Self::Author(a) => a.execute().await,
+            Self::Tag(t) => t.execute().await,
         }
     }
 }
@@ -74,8 +75,20 @@ pub enum Author {
 impl Author {
     pub async fn execute(self) -> Result<()> {
         match self {
-            Self::List => actions::book_list().await,
+            Self::List => actions::author_list().await,
             Self::Insert { name, lang } => actions::author_insert(&name, &lang).await,
+        }
+    }
+}
+
+#[derive(Subcommand)]
+pub enum Tag {
+    List
+}
+impl Tag {
+    pub async fn execute(self) -> Result<()> {
+        match self {
+            Self::List => actions::tag_list().await,
         }
     }
 }

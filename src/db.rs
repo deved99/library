@@ -16,10 +16,10 @@ mod tag;
 
 // Re export
 use crate::{Error, Result};
-pub use author::Author;
+pub use author::{Author, AuthorComplete};
 pub use book::{Book,BookComplete};
 pub use links::{AuthorBook, TagBook};
-pub use tag::Tag;
+pub use tag::{Tag, TagComplete};
 
 //// Functions
 

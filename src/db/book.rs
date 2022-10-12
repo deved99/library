@@ -97,7 +97,7 @@ pub struct BookComplete {
     year: i16,
 }
 impl BookComplete {
-    pub async fn list() -> Result<Vec<BookComplete>> {
+    pub async fn list() -> Result<Vec<Self>> {
         let db = get_pool().await?;
         let query = include_str!("SQL/book-complete_list.sql");
         let books = sqlx::query_as(query).fetch_all(db).await?;

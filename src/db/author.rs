@@ -1,4 +1,4 @@
-use super::{get_pool, Result};
+use super::{get_pool, AsRow, Result};
 use sqlx;
 use uuid::Uuid;
 
@@ -13,8 +13,7 @@ impl Author {
     pub async fn new(name: &str, nationality: &str) -> Result<Self> {
         let db = get_pool().await?;
         let result: Self = sqlx::query_as(
-            "INSERT INTO authors (name, nationality)
-             VALUES ($1, $2)
+            "INSERT INTO authors (name, nationality) VALUES ($1, $2)
              RETURNING uuid,name,nationality",
         )
         .bind(name)
@@ -26,9 +25,7 @@ impl Author {
     pub async fn find(name: &str) -> Result<Vec<Self>> {
         let db = get_pool().await?;
         let result: Vec<Self> = sqlx::query_as(
-            "SELECT uuid,name,nationality
-             FROM authors
-             WHERE name = $1",
+            "SELECT uuid,name,nationality FROM authors WHERE name = $1",
         )
         .bind(name)
         .fetch_all(db)
@@ -57,5 +54,37 @@ impl Author {
             .execute(db)
             .await?;
         Ok(())
+    }
+}
+
+#[derive(sqlx::FromRow, Debug)]
+pub struct AuthorComplete {
+    name: String,
+    nationality: String,
+    books: Vec<String>
+}
+
+impl AuthorComplete {
+    pub async fn list() -> Result<Vec<Self>> {
+        let db = get_pool().await?;
+        let query = include_str!("SQL/author-complete_list.sql");
+        let books = sqlx::query_as(query).fetch_all(db).await?;
+        return Ok(books)
+    }
+}
+
+impl AsRow for AuthorComplete {
+    fn titles() -> Vec<String> {
+        ["author", "nationality", "books"]
+            .iter()
+            .map(|x| x.to_string())
+            .collect()
+    }
+    fn columns(&self) -> Vec<String> {
+        vec![
+            format!("{}", self.name),
+            format!("{}", self.nationality),
+            format!("{:?}", &self.books),
+        ]
     }
 }

@@ -1,7 +1,8 @@
-use super::{get_pool, Result};
+use std::include_str;
+use super::{get_pool, AsRow, Result};
 use sqlx;
 
-#[derive(sqlx::FromRow)]
+#[derive(sqlx::FromRow, Debug)]
 pub struct Tag {
     name: String,
 }
@@ -28,5 +29,35 @@ impl Tag {
             None => Tag::new(name).await,
             Some(t) => Ok(t),
         }
+    }
+}
+
+
+#[derive(sqlx::FromRow, Debug)]
+pub struct TagComplete {
+    tag: String,
+    books: Vec<String>
+}
+impl TagComplete {
+    pub async fn list() -> Result<Vec<Self>> {
+        let db = get_pool().await?;
+        let query = include_str!("SQL/tag-complete_list.sql");
+        let results = sqlx::query_as(query).fetch_all(db).await?;
+        Ok(results)
+    }
+}
+
+impl AsRow for TagComplete {
+    fn titles() -> Vec<String> {
+        ["tag", "books"]
+            .iter()
+            .map(|x| x.to_string())
+            .collect()
+    }
+    fn columns(&self) -> Vec<String> {
+        vec![
+            format!("{}", self.tag),
+            format!("{:?}", &self.books),
+        ]
     }
 }
