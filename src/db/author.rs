@@ -1,8 +1,10 @@
 use super::{get_pool, AsRow, Result};
+use serde::{Deserialize, Serialize};
 use sqlx;
 use uuid::Uuid;
 
 #[derive(Debug, sqlx::FromRow)]
+#[derive(Serialize,Deserialize)]
 pub struct Author {
     uuid: Uuid,
     name: String,
@@ -57,6 +59,7 @@ impl Author {
 }
 
 #[derive(sqlx::FromRow, Debug)]
+#[derive(Serialize,Deserialize)]
 pub struct AuthorComplete {
     name: String,
     nationality: String,

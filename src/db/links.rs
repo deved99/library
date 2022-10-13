@@ -1,9 +1,11 @@
 use super::get_pool;
 use super::Result;
+use serde::{Serialize,Deserialize};
 use sqlx;
 use uuid::Uuid;
 
 #[derive(Debug, sqlx::FromRow)]
+#[derive(Serialize,Deserialize)]
 pub struct AuthorBook {
     author: Uuid,
     book: Uuid,
@@ -25,6 +27,7 @@ impl AuthorBook {
 }
 
 #[derive(Debug, sqlx::FromRow)]
+#[derive(Serialize,Deserialize)]
 pub struct TagBook {
     tag: String,
     book: Uuid,

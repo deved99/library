@@ -1,10 +1,11 @@
 use super::{get_pool, AsRow, Author, Result};
-use itertools::Itertools;
+use serde::{Serialize,Deserialize};
 use sqlx;
 use time::Date;
 use uuid::Uuid;
 
 #[derive(Debug, sqlx::FromRow)]
+#[derive(Serialize,Deserialize)]
 pub struct Book {
     uuid: Uuid,
     title: String,
@@ -89,6 +90,7 @@ pub enum ReadingState {
 }
 
 #[derive(Debug, sqlx::FromRow)]
+#[derive(Serialize,Deserialize)]
 pub struct BookComplete {
     uuid: Uuid,
     title: String,

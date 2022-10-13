@@ -1,4 +1,5 @@
 use crate::{cli::Cli, Result};
+use std::path::PathBuf;
 
 use once_cell::sync::OnceCell;
 
@@ -31,6 +32,7 @@ impl Config {
         let verbose = args.verbose;
         let json = args.json;
         let unattended = args.unattended;
+        let config_path = &args.config;
         Self {verbose, json, unattended}
     }
 }

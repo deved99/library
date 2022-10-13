@@ -1,5 +1,8 @@
+use std::path::PathBuf;
+
 use crate::actions;
 use crate::Result;
+
 use clap::{Args, Parser, Subcommand};
 
 #[derive(Parser)]
@@ -15,6 +18,10 @@ pub struct Cli {
     /// Increase output verbosity
     #[arg(short, long)]
     pub verbose: bool,
+
+    /// Config file path
+    #[arg(long)]
+    pub config: Option<PathBuf>,
 
     #[command(subcommand)]
     pub command: Command,
