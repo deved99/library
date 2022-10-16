@@ -11,6 +11,7 @@ use sqlx::{
 
 mod author;
 mod book;
+mod dump;
 mod links;
 mod tag;
 
@@ -20,6 +21,7 @@ pub use author::{Author, AuthorComplete};
 pub use book::{Book, BookComplete};
 pub use links::{AuthorBook, TagBook};
 pub use tag::{Tag, TagComplete};
+pub use dump::Dump;
 
 //// Functions
 

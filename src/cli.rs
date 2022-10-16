@@ -43,6 +43,9 @@ pub enum Command {
     /// Actions related to a tag
     #[command(subcommand)]
     Tag(Tag),
+
+    /// Stuff i'm testing
+    Test,
 }
 impl Command {
     pub async fn execute(self) -> Result<()> {
@@ -51,6 +54,7 @@ impl Command {
             Self::Book(b) => b.execute().await,
             Self::Author(a) => a.execute().await,
             Self::Tag(t) => t.execute().await,
+            Self::Test => test().await,
         }
     }
 }
@@ -116,4 +120,26 @@ impl Tag {
             Self::List => actions::tag::list().await,
         }
     }
+}
+
+use std::fs::File;
+use crate::db;
+use serde_json;
+use sqlx;
+
+#[derive(sqlx::FromRow, Debug)]
+struct Foo {
+    unnest: String,
+}
+async fn test() -> Result<()> {
+    // Print authors in table
+    let authors = db::Author::list().await?;
+    let json = serde_json::to_string(&authors)?;
+    println!("{}", json);
+    // Parse Dump
+    let file = File::open("./dump-example.json")?;
+    let dump: db::Dump = serde_json::from_reader(file)?;
+    dump.write().await?;
+    // let db = db::get_pool().await?;
+    Ok(())
 }

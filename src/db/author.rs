@@ -1,17 +1,19 @@
+use std::include_str;
+use super::print_table;
 use super::{get_pool, AsRow, Result};
 use serde::{Deserialize, Serialize};
+use serde_json;
 use sqlx;
 use uuid::Uuid;
 
-#[derive(Debug, sqlx::FromRow)]
-#[derive(Serialize,Deserialize)]
+#[derive(Debug, sqlx::FromRow, Serialize, Deserialize)]
 pub struct Author {
     uuid: Uuid,
     name: String,
     nationality: String,
 }
 impl Author {
-    // Create
+    /// Create a new Author, writing it to the database.
     pub async fn new(name: &str, nationality: &str) -> Result<Self> {
         let db = get_pool().await?;
         let result: Self = sqlx::query_as(
@@ -24,6 +26,18 @@ impl Author {
         .await?;
         Ok(result)
     }
+    /// Write many authors to the database, returns written ones.
+    pub async fn write_many(authors: &[Self]) -> Result<Vec<Self>> {
+        let db = get_pool().await?;
+        let query = include_str!("SQL/author_write-many.sql");
+        let json = serde_json::to_string(authors)?;
+        let authors: Vec<Self> = sqlx::query_as(query)
+            .bind(json)
+            .fetch_all(db)
+            .await?;
+        Ok(authors)
+    }
+    // Read
     pub async fn find(name: &str) -> Result<Vec<Self>> {
         let db = get_pool().await?;
         let result: Vec<Self> =
@@ -33,7 +47,6 @@ impl Author {
                 .await?;
         Ok(result)
     }
-    // Read
     pub async fn list() -> Result<Vec<Self>> {
         let db = get_pool().await?;
         let results: Vec<Self> = sqlx::query_as("SELECT * FROM authors;")
@@ -58,8 +71,23 @@ impl Author {
     }
 }
 
-#[derive(sqlx::FromRow, Debug)]
-#[derive(Serialize,Deserialize)]
+impl AsRow for Author {
+    fn titles() -> Vec<String> {
+        ["uuid", "author", "nationality"]
+            .iter()
+            .map(|x| x.to_string())
+            .collect()
+    }
+    fn columns(&self) -> Vec<String> {
+        vec![
+            format!("{}", self.uuid),
+            format!("{}", self.name),
+            format!("{}", self.nationality),
+        ]
+    }
+}
+
+#[derive(sqlx::FromRow, Debug, Serialize, Deserialize)]
 pub struct AuthorComplete {
     name: String,
     nationality: String,

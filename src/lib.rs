@@ -6,6 +6,7 @@ mod error_handling;
 mod actions {
     pub mod author;
     pub mod book;
+    pub mod dump;
     pub mod tag;
 }
 

@@ -1,11 +1,10 @@
-use super::{get_pool, AsRow, Author, Result};
-use serde::{Serialize,Deserialize};
+use super::{get_pool, AsRow, Result};
+use serde::{Deserialize, Serialize};
 use sqlx;
 use time::Date;
 use uuid::Uuid;
 
-#[derive(Debug, sqlx::FromRow)]
-#[derive(Serialize,Deserialize)]
+#[derive(Debug, sqlx::FromRow, Serialize, Deserialize)]
 pub struct Book {
     uuid: Uuid,
     title: String,
@@ -89,14 +88,15 @@ pub enum ReadingState {
     Reading,
 }
 
-#[derive(Debug, sqlx::FromRow)]
-#[derive(Serialize,Deserialize)]
+#[derive(Debug, sqlx::FromRow, Serialize, Deserialize)]
 pub struct BookComplete {
     uuid: Uuid,
     title: String,
+    year: i16,
+    date_started: Option<Date>,
+    date_finished: Option<Date>,
     authors: Vec<String>,
     tags: Vec<String>,
-    year: i16,
 }
 impl BookComplete {
     pub async fn list() -> Result<Vec<Self>> {

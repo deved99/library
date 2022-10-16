@@ -33,6 +33,10 @@ impl Config {
         let json = args.json;
         let unattended = args.unattended;
         let config_path = &args.config;
-        Self {verbose, json, unattended}
+        Self {
+            verbose,
+            json,
+            unattended,
+        }
     }
 }
