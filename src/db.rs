@@ -18,7 +18,7 @@ mod tag;
 // Re export
 use crate::{Error, Result};
 pub use author::{Author, AuthorComplete};
-pub use book::{Book, BookComplete};
+pub use book::{Book, BookComplete, BookDump};
 pub use links::{AuthorBook, TagBook};
 pub use tag::{Tag, TagComplete};
 pub use dump::Dump;

@@ -132,14 +132,17 @@ struct Foo {
     unnest: String,
 }
 async fn test() -> Result<()> {
-    // Print authors in table
-    let authors = db::Author::list().await?;
-    let json = serde_json::to_string(&authors)?;
+    // Before
+    let export = db::Dump::export().await?;
+    let json = serde_json::to_string(&export)?;
     println!("{}", json);
     // Parse Dump
     let file = File::open("./dump-example.json")?;
     let dump: db::Dump = serde_json::from_reader(file)?;
-    dump.write().await?;
-    // let db = db::get_pool().await?;
+    dump.import().await?;
+    // After
+    let export = db::Dump::export().await?;
+    let json = serde_json::to_string(&export)?;
+    println!("{}", json);
     Ok(())
 }

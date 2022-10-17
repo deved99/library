@@ -34,6 +34,17 @@ impl Book {
         let results: Vec<Self> = sqlx::query_as("SELECT * FROM books;").fetch_all(db).await?;
         Ok(results)
     }
+    /// Write many books to the database, returns written ones.
+    pub async fn write_many(books: &[Self]) -> Result<Vec<Self>> {
+        let db = get_pool().await?;
+        let query = include_str!("SQL/book_write-many.sql");
+        let json = serde_json::to_string(books)?;
+        let books: Vec<Self> = sqlx::query_as(query)
+            .bind(json)
+            .fetch_all(db)
+            .await?;
+        Ok(books)
+    }
     // Update
     //// state change
     // pub async fn read(&mut self) -> Result<()> {
@@ -98,7 +109,11 @@ pub struct BookComplete {
     authors: Vec<String>,
     tags: Vec<String>,
 }
+
 impl BookComplete {
+    pub fn uuid(&self) -> Uuid {
+        self.uuid
+    }
     pub async fn list() -> Result<Vec<Self>> {
         let db = get_pool().await?;
         let query = include_str!("SQL/book-complete_list.sql");
@@ -121,5 +136,47 @@ impl AsRow for BookComplete {
             format!("{}", self.year),
             format!("{:?}", &self.tags),
         ]
+    }
+}
+
+#[derive(Debug, sqlx::FromRow, Serialize, Deserialize)]
+pub struct BookDump {
+    uuid: Uuid,
+    title: String,
+    year: i16,
+    date_started: Option<Date>,
+    date_finished: Option<Date>,
+    authors: Vec<Uuid>,
+    tags: Vec<String>,
+}
+
+impl BookDump {
+    pub fn uuid(&self) -> Uuid {
+        self.uuid
+    }
+    pub async fn list() -> Result<Vec<Self>> {
+        let db = get_pool().await?;
+        let query = include_str!("SQL/book-dump_list.sql");
+        let books = sqlx::query_as(query).fetch_all(db).await?;
+        return Ok(books);
+    }
+    pub fn to_book(&self) -> Book {
+        Book {
+            uuid: self.uuid,
+            title: self.title.to_string(),
+            year: self.year,
+            date_started: self.date_started,
+            date_finished: self.date_finished
+        }
+    }
+    pub fn to_tag_links(&self) -> Vec<(Uuid, String)> {
+        self.tags.iter()
+            .map(|x| (self.uuid, x.to_string()))
+            .collect()
+    }
+    pub fn to_author_links(&self) -> Vec<(Uuid, Uuid)> {
+        self.authors.iter()
+            .map(|x| (self.uuid, *x))
+            .collect()
     }
 }
