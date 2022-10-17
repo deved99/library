@@ -6,6 +6,7 @@ use serde_json;
 use sqlx;
 use uuid::Uuid;
 
+#[derive(PartialEq, Eq, Hash, Clone)]
 #[derive(Debug, sqlx::FromRow, Serialize, Deserialize)]
 pub struct Author {
     uuid: Uuid,

@@ -1,9 +1,10 @@
-use super::{get_pool, AsRow, Result};
+use crate::db::{self, get_pool, AsRow, Result};
 use serde::{Deserialize, Serialize};
 use sqlx;
 use time::Date;
 use uuid::Uuid;
 
+#[derive(PartialEq, Eq, Hash, Clone)]
 #[derive(Debug, sqlx::FromRow, Serialize, Deserialize)]
 pub struct Book {
     uuid: Uuid,
@@ -169,14 +170,19 @@ impl BookDump {
             date_finished: self.date_finished
         }
     }
-    pub fn to_tag_links(&self) -> Vec<(Uuid, String)> {
+    pub fn to_tags(&self) -> Vec<db::Tag> {
         self.tags.iter()
-            .map(|x| (self.uuid, x.to_string()))
+            .map(|x| db::Tag::new(x))
             .collect()
     }
-    pub fn to_author_links(&self) -> Vec<(Uuid, Uuid)> {
+    pub fn to_tag_links(&self) -> Vec<db::TagBook> {
+        self.tags.iter()
+            .map(|x| db::TagBook::new(x, self.uuid))
+            .collect()
+    }
+    pub fn to_author_links(&self) -> Vec<db::AuthorBook> {
         self.authors.iter()
-            .map(|x| (self.uuid, *x))
+            .map(|x| db::AuthorBook::new(*x, self.uuid))
             .collect()
     }
 }

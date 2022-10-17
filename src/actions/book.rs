@@ -1,6 +1,6 @@
+use std::ops::Deref;
 use crate::db;
 use crate::{Error, Result};
-use std::ops::Deref;
 
 pub async fn list() -> Result<()> {
     let books = db::BookComplete::list().await?;
@@ -29,13 +29,13 @@ pub async fn insert<T: Deref<Target = str>>(
     println!("{:?}", book);
     // Create links
     // // Author
-    let author_link = db::AuthorBook::new(author.uuid(), book.uuid()).await?;
+    let author_link = db::AuthorBook::write_new(author.uuid(), book.uuid()).await?;
     // // Tag
     println!("Linked artist:\n {:?}", author_link);
     println!("Linking tags:");
     for tag in tags {
         db::Tag::find_or_create(tag).await?;
-        let link = db::TagBook::new(tag, book.uuid()).await?;
+        let link = db::TagBook::write_new(tag, book.uuid()).await?;
         println!("{:?}", &link);
     }
     Ok(())

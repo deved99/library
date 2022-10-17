@@ -1,6 +1,6 @@
 -- uuid, title, author, tags, year
 SELECT
-    b.uuid, b.title, b.year, b.started_date, b.finished_date,
+    b.uuid, b.title, b.year, b.date_started, b.date_finished,
     coalesce(la.authors, '{}') AS authors,
     coalesce(lt.tags, '{}') AS tags
 FROM books as b

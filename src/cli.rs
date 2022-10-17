@@ -44,8 +44,9 @@ pub enum Command {
     #[command(subcommand)]
     Tag(Tag),
 
-    /// Stuff i'm testing
-    Test,
+    /// Import, export a Dump
+    #[command(subcommand)]
+    Dump(Dump),
 }
 impl Command {
     pub async fn execute(self) -> Result<()> {
@@ -54,7 +55,7 @@ impl Command {
             Self::Book(b) => b.execute().await,
             Self::Author(a) => a.execute().await,
             Self::Tag(t) => t.execute().await,
-            Self::Test => test().await,
+            Self::Dump(d) => d.execute().await,
         }
     }
 }
@@ -122,27 +123,20 @@ impl Tag {
     }
 }
 
-use std::fs::File;
-use crate::db;
-use serde_json;
-use sqlx;
-
-#[derive(sqlx::FromRow, Debug)]
-struct Foo {
-    unnest: String,
+#[derive(Subcommand)]
+pub enum Dump {
+    Import{
+        /// File to import
+        path: String
+    },
+    Export
 }
-async fn test() -> Result<()> {
-    // Before
-    let export = db::Dump::export().await?;
-    let json = serde_json::to_string(&export)?;
-    println!("{}", json);
-    // Parse Dump
-    let file = File::open("./dump-example.json")?;
-    let dump: db::Dump = serde_json::from_reader(file)?;
-    dump.import().await?;
-    // After
-    let export = db::Dump::export().await?;
-    let json = serde_json::to_string(&export)?;
-    println!("{}", json);
-    Ok(())
+
+impl Dump {
+    pub async fn execute(self) -> Result<()> {
+        match self {
+            Self::Import{path} => actions::dump::import(path).await,
+            Self::Export => actions::dump::export().await
+        }
+    }
 }

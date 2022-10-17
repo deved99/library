@@ -1,5 +1,53 @@
 {
-  "books": [],
+  "books": [
+    {
+      "uuid": "a32c786f-12e6-47d2-a103-61cf83299131",
+      "title": "1984",
+      "year": 1949,
+      "date_started": null,
+      "date_finished": null,
+      "authors": [
+        "7c125ac7-0041-4788-823f-79a4c3ac3419",
+        "e211d261-0eb8-4f58-9887-adb309887633"
+      ],
+      "tags": []
+    },
+    {
+      "uuid": "e8a06556-3ca2-49ee-a7e1-564f4d5afc62",
+      "title": "The Giver",
+      "year": 1993,
+      "date_started": null,
+      "date_finished": null,
+      "authors": [
+        "e211d261-0eb8-4f58-9887-adb309887633"
+      ],
+      "tags": []
+    },
+    {
+      "uuid": "e8605f87-06e2-4c03-9d08-e1163f9381a4",
+      "title": "Messenger",
+      "year": 2004,
+      "date_started": null,
+      "date_finished": null,
+      "authors": [
+        "e211d261-0eb8-4f58-9887-adb309887633"
+      ],
+      "tags": [
+        "Science Fiction"
+      ]
+    },
+    {
+      "uuid": "3c0fca57-5bf0-437d-a047-cfa8ee0baa43",
+      "title": "La Rivincita",
+      "year": 2000,
+      "date_started": null,
+      "date_finished": null,
+      "authors": [
+        "e211d261-0eb8-4f58-9887-adb309887633"
+      ],
+      "tags": []
+    }
+  ],
   "authors": [
     {
       "uuid": "7c125ac7-0041-4788-823f-79a4c3ac3419",
@@ -25,6 +73,11 @@
       "uuid": "36a829f5-555b-4abd-bc8b-6cdc870034c4",
       "name": "Nietzsche",
       "nationality": "Deutsh"
+    },
+    {
+      "uuid": "7265ab80-5377-418c-84f9-760db3d1d05e",
+      "name": "Abbot, Edwin Abbott Abbott",
+      "nationality": "English"
     }
   ]
 }
