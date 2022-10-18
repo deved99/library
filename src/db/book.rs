@@ -1,7 +1,7 @@
 use crate::db::{self, get_pool, AsRow, Result};
 use serde::{Deserialize, Serialize};
 use sqlx;
-use time::Date;
+use chrono::NaiveDate;
 use uuid::Uuid;
 
 #[derive(PartialEq, Eq, Hash, Clone)]
@@ -10,8 +10,8 @@ pub struct Book {
     uuid: Uuid,
     title: String,
     year: i16,
-    date_started: Option<Date>,
-    date_finished: Option<Date>,
+    date_started: Option<NaiveDate>,
+    date_finished: Option<NaiveDate>,
 }
 impl Book {
     // Create
@@ -25,6 +25,15 @@ impl Book {
         .fetch_one(db)
         .await?;
         Ok(result)
+    }
+    pub async fn from_uuid(uuid: Uuid) -> Result<Self> {
+        let db = get_pool().await?;
+        let book = sqlx::query_as(
+            "SELECT uuid, title, year, date_started, date_finished
+             FROM books
+             WHERE uuid = $1"
+        ).bind(uuid).fetch_one(db).await?;
+        Ok(book)
     }
     // Read
     pub fn uuid(&self) -> Uuid {
@@ -46,20 +55,15 @@ impl Book {
             .await?;
         Ok(books)
     }
-    // Update
-    //// state change
-    // pub async fn read(&mut self) -> Result<()> {
-    //     self.state = ReadingState::Reading;
-    //     self.update().await
-    // }
-    // pub async fn finish(&mut self) -> Result<()> {
-    //     self.state = ReadingState::Finished;
-    //     self.update().await
-    // }
-    // pub async fn reset(&mut self) -> Result<()> {
-    //     self.state = ReadingState::ToRead;
-    //     self.update().await
-    // }
+    /// Set self.started_reading
+    pub async fn set_date_started(&mut self, date: Option<NaiveDate>) -> Result<()> {
+        self.date_started = date;
+        self.update().await
+    }
+    pub async fn set_date_finished(&mut self, date: Option<NaiveDate>) -> Result<()> {
+        self.date_finished = date;
+        self.update().await
+    }
     //// Helpers
     async fn update(&self) -> Result<()> {
         let db = get_pool().await?;
@@ -105,8 +109,8 @@ pub struct BookComplete {
     uuid: Uuid,
     title: String,
     year: i16,
-    date_started: Option<Date>,
-    date_finished: Option<Date>,
+    date_started: Option<NaiveDate>,
+    date_finished: Option<NaiveDate>,
     authors: Vec<String>,
     tags: Vec<String>,
 }
@@ -145,8 +149,8 @@ pub struct BookDump {
     uuid: Uuid,
     title: String,
     year: i16,
-    date_started: Option<Date>,
-    date_finished: Option<Date>,
+    date_started: Option<NaiveDate>,
+    date_finished: Option<NaiveDate>,
     authors: Vec<Uuid>,
     tags: Vec<String>,
 }

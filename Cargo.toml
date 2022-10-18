@@ -39,7 +39,7 @@ features = [
   "postgres",
   "json",
   "uuid",
-  "time"
+  "chrono"
 ]
 
 # Parse UUIDs, used by sqlx
@@ -47,6 +47,6 @@ features = [
 version = "1.1.2"
 features = ["serde"]
 
-[dependencies.time]
-version = "0.3"
-features = ["serde-well-known"]
+[dependencies.chrono]
+version = "0.4"
+features = ["serde"]

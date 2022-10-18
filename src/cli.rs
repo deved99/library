@@ -4,6 +4,8 @@ use crate::actions;
 use crate::Result;
 
 use clap::{Args, Parser, Subcommand};
+use uuid::Uuid;
+use chrono;
 
 #[derive(Parser)]
 pub struct Cli {
@@ -75,6 +77,20 @@ pub enum Book {
         #[arg(long)]
         tag: Vec<String>,
     },
+    /// Start a book
+    Start {
+        #[arg(long)]
+        uuid: Uuid,
+        #[arg(long)]
+        date: Option<chrono::NaiveDate>,
+    },
+    /// Finish a book
+    Finish {
+        #[arg(long)]
+        uuid: Uuid,
+        #[arg(long)]
+        date: Option<chrono::NaiveDate>,
+    }
 }
 impl Book {
     pub async fn execute(self) -> Result<()> {
@@ -86,6 +102,8 @@ impl Book {
                 author,
                 tag,
             } => actions::book::insert(&title, &author, year, &tag).await,
+            Self::Start {uuid, date} => actions::book::start(uuid, date).await,
+            Self::Finish {uuid, date} => actions::book::finish(uuid, date).await
         }
     }
 }
