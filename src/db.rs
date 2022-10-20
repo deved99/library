@@ -3,6 +3,8 @@ use dotenv_codegen::dotenv;
 use once_cell::sync::OnceCell;
 // Pretty print of tables
 use prettytable;
+use serde::Serialize;
+use serde_json;
 // Used to connect to the database
 use sqlx::{
     self,
@@ -17,10 +19,11 @@ mod tag;
 
 // Re export
 use crate::{Error, Result};
-pub use author::{Author, AuthorComplete};
-pub use book::{Book, BookComplete, BookDump};
+use crate::config;
+pub use author::Author;
+pub use book::{Book, BookDump};
 pub use links::{AuthorBook, TagBook};
-pub use tag::{Tag, TagComplete};
+pub use tag::Tag;
 pub use dump::Dump;
 
 //// Functions
@@ -44,7 +47,22 @@ pub trait AsRow {
     fn columns(&self) -> Vec<String>;
 }
 
-pub fn print_table<T: AsRow>(rows: &Vec<T>) {
+pub fn print_table<T: Serialize + AsRow>(rows: &[T]) -> Result<()> {
+    let config = config::get_config()?;
+    let if_pretty = !config.json;
+    match if_pretty {
+        true => print_table_asrow(rows),
+        false => print_table_serde(rows)
+    }
+}
+
+fn print_table_serde<T: Serialize>(rows: &[T]) -> Result<()> {
+    let lines = serde_json::to_string(rows)?;
+    println!("{}", lines);
+    Ok(())
+}
+
+fn print_table_asrow<T: AsRow>(rows: &[T]) -> Result<()> {
     let mut table = prettytable::Table::new();
     let format = *prettytable::format::consts::FORMAT_BOX_CHARS;
     table.set_format(format);
@@ -58,4 +76,5 @@ pub fn print_table<T: AsRow>(rows: &Vec<T>) {
     }
     // Finally print
     table.printstd();
+    Ok(())
 }

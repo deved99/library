@@ -2,7 +2,7 @@ use crate::db;
 use crate::{Error, Result};
 
 pub async fn list() -> Result<()> {
-    let authors = db::AuthorComplete::list().await?;
+    let authors = db::Author::list().await?;
     db::print_table(&authors);
     Ok(())
 }

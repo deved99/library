@@ -12,6 +12,13 @@ impl Tag {
     pub fn new(name: &str) -> Self {
         Self { name: name.to_string() }
     }
+    pub async fn list() -> Result<Vec<Self>> {
+        let db = get_pool().await?;
+        let tags = sqlx::query_as("SELECT name FROM tags")
+            .fetch_all(db)
+            .await?;
+        Ok(tags)
+    }
     pub async fn write_new(name: &str) -> Result<Self> {
         let db = get_pool().await?;
         let tag = sqlx::query_as("INSERT INTO tags (name) VALUES ($1) RETURNING name;")
@@ -47,25 +54,13 @@ impl Tag {
     }
 }
 
-#[derive(sqlx::FromRow, Debug)]
-pub struct TagComplete {
-    tag: String,
-    books: Vec<String>,
-}
-impl TagComplete {
-    pub async fn list() -> Result<Vec<Self>> {
-        let db = get_pool().await?;
-        let query = include_str!("SQL/tag-complete_list.sql");
-        let results = sqlx::query_as(query).fetch_all(db).await?;
-        Ok(results)
-    }
-}
-
-impl AsRow for TagComplete {
+impl AsRow for Tag {
     fn titles() -> Vec<String> {
-        ["tag", "books"].iter().map(|x| x.to_string()).collect()
+        vec![ String::from("name") ]
     }
     fn columns(&self) -> Vec<String> {
-        vec![format!("{}", self.tag), format!("{:?}", &self.books)]
+        vec![
+            format!("{}", self.name),
+        ]
     }
 }

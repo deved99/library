@@ -5,7 +5,7 @@ use chrono::{self,NaiveDate};
 use uuid::Uuid;
 
 pub async fn list() -> Result<()> {
-    let books = db::BookComplete::list().await?;
+    let books = db::Book::list().await?;
     db::print_table(&books);
     Ok(())
 }

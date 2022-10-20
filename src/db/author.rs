@@ -88,34 +88,3 @@ impl AsRow for Author {
     }
 }
 
-#[derive(sqlx::FromRow, Debug, Serialize, Deserialize)]
-pub struct AuthorComplete {
-    name: String,
-    nationality: String,
-    books: Vec<String>,
-}
-
-impl AuthorComplete {
-    pub async fn list() -> Result<Vec<Self>> {
-        let db = get_pool().await?;
-        let query = include_str!("SQL/author-complete_list.sql");
-        let books = sqlx::query_as(query).fetch_all(db).await?;
-        return Ok(books);
-    }
-}
-
-impl AsRow for AuthorComplete {
-    fn titles() -> Vec<String> {
-        ["author", "nationality", "books"]
-            .iter()
-            .map(|x| x.to_string())
-            .collect()
-    }
-    fn columns(&self) -> Vec<String> {
-        vec![
-            format!("{}", self.name),
-            format!("{}", self.nationality),
-            format!("{:?}", &self.books),
-        ]
-    }
-}

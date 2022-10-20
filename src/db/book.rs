@@ -96,54 +96,6 @@ impl AsRow for Book {
     }
 }
 
-#[derive(Debug, sqlx::Type, Clone, Copy)]
-#[sqlx(type_name = "reading_state", rename_all = "snake_case")]
-pub enum ReadingState {
-    Finished,
-    ToRead,
-    Reading,
-}
-
-#[derive(Debug, sqlx::FromRow, Serialize, Deserialize)]
-pub struct BookComplete {
-    uuid: Uuid,
-    title: String,
-    year: i16,
-    date_started: Option<NaiveDate>,
-    date_finished: Option<NaiveDate>,
-    authors: Vec<String>,
-    tags: Vec<String>,
-}
-
-impl BookComplete {
-    pub fn uuid(&self) -> Uuid {
-        self.uuid
-    }
-    pub async fn list() -> Result<Vec<Self>> {
-        let db = get_pool().await?;
-        let query = include_str!("SQL/book-complete_list.sql");
-        let books = sqlx::query_as(query).fetch_all(db).await?;
-        return Ok(books);
-    }
-}
-
-impl AsRow for BookComplete {
-    fn titles() -> Vec<String> {
-        ["title", "author", "year", "tags"]
-            .iter()
-            .map(|x| x.to_string())
-            .collect()
-    }
-    fn columns(&self) -> Vec<String> {
-        vec![
-            format!("{}", self.title),
-            format!("{:?}", self.authors),
-            format!("{}", self.year),
-            format!("{:?}", &self.tags),
-        ]
-    }
-}
-
 #[derive(Debug, sqlx::FromRow, Serialize, Deserialize)]
 pub struct BookDump {
     uuid: Uuid,
