@@ -1,4 +1,4 @@
 #[tokio::main]
-async fn main() {
-    book::main().await;
+async fn main() -> book::Result<()> {
+    book::main().await
 }

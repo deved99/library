@@ -17,7 +17,7 @@ use cli::Cli;
 // Re-exports
 pub use error_handling::{Error, Result};
 
-pub async fn main() {
+pub async fn main() -> Result<()> {
     // Parse arguments
     let args = Cli::parse();
 
@@ -27,7 +27,7 @@ pub async fn main() {
     // Finally do what you've been asked
     let res = args.command.execute().await;
     if let Err(ref e) = res {
-        println!("{}\n", e);
-        res.unwrap();
+        eprintln!("{}\n", e);
     }
+    res
 }
