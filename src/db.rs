@@ -19,7 +19,7 @@ mod tag;
 
 // Re export
 use crate::config;
-use crate::{Error, Result};
+use crate::Result;
 pub use author::Author;
 pub use book::{Book, BookDump};
 pub use dump::Dump;

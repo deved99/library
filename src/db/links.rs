@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 use serde_json;
 use sqlx;
 use std::include_str;
-use std::ops::Deref;
 use uuid::Uuid;
 
 #[derive(PartialEq, Eq, Hash, Clone, Debug, sqlx::FromRow, Serialize, Deserialize)]

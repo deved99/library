@@ -1,9 +1,9 @@
 use crate::db;
-use crate::{Error, Result};
+use crate::Result;
 
 pub async fn list() -> Result<()> {
     let authors = db::Author::list().await?;
-    db::print_table(&authors);
+    db::print_table(&authors)?;
     Ok(())
 }
 

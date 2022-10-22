@@ -1,5 +1,4 @@
 use crate::{cli::Cli, Result};
-use std::path::PathBuf;
 
 use once_cell::sync::OnceCell;
 

@@ -1,4 +1,3 @@
-use super::print_table;
 use super::{get_pool, AsRow, Result};
 use serde::{Deserialize, Serialize};
 use serde_json;

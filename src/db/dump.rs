@@ -1,11 +1,8 @@
-use std::collections::HashSet;
-
 use crate::db::{self, Author, AuthorBook, Book, BookDump, Tag, TagBook};
 use crate::Result;
 
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 
 #[derive(Deserialize, Serialize)]
 pub struct Dump {

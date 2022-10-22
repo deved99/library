@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 pub async fn list() -> Result<()> {
     let books = db::Book::list().await?;
-    db::print_table(&books);
+    db::print_table(&books)?;
     Ok(())
 }
 
