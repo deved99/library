@@ -1,7 +1,7 @@
-use std::ops::Deref;
 use crate::db;
 use crate::{Error, Result};
-use chrono::{self,NaiveDate};
+use chrono::{self, NaiveDate};
+use std::ops::Deref;
 use uuid::Uuid;
 
 pub async fn list() -> Result<()> {
@@ -46,7 +46,7 @@ pub async fn insert<T: Deref<Target = str>>(
 pub async fn start(uuid: Uuid, date: Option<NaiveDate>) -> Result<()> {
     let date = match date {
         None => chrono::Local::now().date_naive(),
-        Some(d) => d
+        Some(d) => d,
     };
     let mut book = db::Book::from_uuid(uuid).await?;
     book.set_date_started(Some(date)).await?;
@@ -56,7 +56,7 @@ pub async fn start(uuid: Uuid, date: Option<NaiveDate>) -> Result<()> {
 pub async fn finish(uuid: Uuid, date: Option<NaiveDate>) -> Result<()> {
     let date = match date {
         None => chrono::Local::now().date_naive(),
-        Some(d) => d
+        Some(d) => d,
     };
     let mut book = db::Book::from_uuid(uuid).await?;
     book.set_date_finished(Some(date)).await?;

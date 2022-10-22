@@ -3,9 +3,9 @@ use std::path::PathBuf;
 use crate::actions;
 use crate::Result;
 
+use chrono;
 use clap::{Args, Parser, Subcommand};
 use uuid::Uuid;
-use chrono;
 
 #[derive(Parser)]
 pub struct Cli {
@@ -90,7 +90,7 @@ pub enum Book {
         uuid: Uuid,
         #[arg(long)]
         date: Option<chrono::NaiveDate>,
-    }
+    },
 }
 impl Book {
     pub async fn execute(self) -> Result<()> {
@@ -102,8 +102,8 @@ impl Book {
                 author,
                 tag,
             } => actions::book::insert(&title, &author, year, &tag).await,
-            Self::Start {uuid, date} => actions::book::start(uuid, date).await,
-            Self::Finish {uuid, date} => actions::book::finish(uuid, date).await
+            Self::Start { uuid, date } => actions::book::start(uuid, date).await,
+            Self::Finish { uuid, date } => actions::book::finish(uuid, date).await,
         }
     }
 }
@@ -143,18 +143,18 @@ impl Tag {
 
 #[derive(Subcommand)]
 pub enum Dump {
-    Import{
+    Import {
         /// File to import
-        path: String
+        path: String,
     },
-    Export
+    Export,
 }
 
 impl Dump {
     pub async fn execute(self) -> Result<()> {
         match self {
-            Self::Import{path} => actions::dump::import(path).await,
-            Self::Export => actions::dump::export().await
+            Self::Import { path } => actions::dump::import(path).await,
+            Self::Export => actions::dump::export().await,
         }
     }
 }

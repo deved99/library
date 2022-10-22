@@ -26,8 +26,8 @@ CREATE TABLE books(
 CREATE TABLE authors(
   uuid UUID NOT NULL DEFAULT uuid_generate_v4(),
   CONSTRAINT uuid_authors PRIMARY KEY ( uuid ),
-  name TEXT,
-  nationality TEXT
+  name TEXT NOT NULL,
+  nationality TEXT NOT NULL
 );
 
 CREATE TABLE authors_books(

@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use crate::db::{self, Author, Book, BookDump, Tag, AuthorBook, TagBook};
+use crate::db::{self, Author, AuthorBook, Book, BookDump, Tag, TagBook};
 use crate::Result;
 
 use itertools::Itertools;
@@ -21,21 +21,24 @@ impl Dump {
     }
     pub async fn import(&self) -> Result<()> {
         // Process &self to:
-        let books: Vec<Book> = self.books.iter()
-            .map(|x| x.to_book())
-            .unique()
-            .collect();
-        let tags: Vec<db::Tag> = self.books.iter()
+        let books: Vec<Book> = self.books.iter().map(|x| x.to_book()).unique().collect();
+        let tags: Vec<db::Tag> = self
+            .books
+            .iter()
             .map(|x| x.to_tags())
             .flatten()
             .unique()
             .collect();
-        let authors_books: Vec<AuthorBook> = self.books.iter()
+        let authors_books: Vec<AuthorBook> = self
+            .books
+            .iter()
             .map(|x| x.to_author_links())
             .flatten()
             .unique()
             .collect();
-        let tags_books: Vec<TagBook> = self.books.iter()
+        let tags_books: Vec<TagBook> = self
+            .books
+            .iter()
             .map(|x| x.to_tag_links())
             .flatten()
             .unique()

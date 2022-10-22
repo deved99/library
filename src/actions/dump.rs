@@ -1,8 +1,8 @@
+use crate::db;
+use crate::Result;
+use serde_json;
 use std::fs::File;
 use std::path::Path;
-use crate::Result;
-use crate::db;
-use serde_json;
 
 pub async fn import(path: impl AsRef<Path>) -> Result<()> {
     let reader = File::open(path)?;

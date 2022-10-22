@@ -18,13 +18,13 @@ mod links;
 mod tag;
 
 // Re export
-use crate::{Error, Result};
 use crate::config;
+use crate::{Error, Result};
 pub use author::Author;
 pub use book::{Book, BookDump};
+pub use dump::Dump;
 pub use links::{AuthorBook, TagBook};
 pub use tag::Tag;
-pub use dump::Dump;
 
 //// Functions
 
@@ -52,7 +52,7 @@ pub fn print_table<T: Serialize + AsRow>(rows: &[T]) -> Result<()> {
     let if_pretty = !config.json;
     match if_pretty {
         true => print_table_asrow(rows),
-        false => print_table_serde(rows)
+        false => print_table_serde(rows),
     }
 }
 
