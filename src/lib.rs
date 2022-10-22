@@ -2,6 +2,7 @@ mod cli;
 mod config;
 mod db;
 mod error_handling;
+mod miscutils;
 
 mod actions {
     pub mod author;
