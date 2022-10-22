@@ -49,6 +49,8 @@ pub enum Command {
     /// Import, export a Dump
     #[command(subcommand)]
     Dump(Dump),
+
+    Test,
 }
 impl Command {
     pub async fn execute(self) -> Result<()> {
@@ -58,6 +60,7 @@ impl Command {
             Self::Author(a) => a.execute().await,
             Self::Tag(t) => t.execute().await,
             Self::Dump(d) => d.execute().await,
+            Self::Test => test(),
         }
     }
 }
@@ -76,6 +79,9 @@ pub enum Book {
         year: i16,
         #[arg(long)]
         tag: Vec<String>,
+    },
+    Delete {
+        uuid: Uuid
     },
     /// Start a book
     Start {
@@ -102,6 +108,7 @@ impl Book {
                 author,
                 tag,
             } => actions::book::insert(&title, &author, year, &tag).await,
+            Self::Delete { uuid } => actions::book::delete(uuid).await,
             Self::Start { uuid, date } => actions::book::start(uuid, date).await,
             Self::Finish { uuid, date } => actions::book::finish(uuid, date).await,
         }
@@ -157,4 +164,11 @@ impl Dump {
             Self::Export => actions::dump::export().await,
         }
     }
+}
+
+use crate::miscutils;
+fn test() -> Result<()> {
+    let s = miscutils::confirm()?;
+    println!("You wrote {:?}", s);
+    Ok(())
 }

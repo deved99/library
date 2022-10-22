@@ -1,5 +1,5 @@
-use std::io::{self, Write};
 use crate::Result;
+use std::io::{self, Write};
 
 pub fn ask(prompt: &str) -> Result<String> {
     let stdin = io::stdin();
@@ -9,7 +9,7 @@ pub fn ask(prompt: &str) -> Result<String> {
     // Read & return
     let mut s = String::new();
     stdin.read_line(&mut s)?;
-    return Ok(s.trim().to_string())
+    return Ok(s.trim().to_string());
 }
 
 pub fn confirm() -> Result<bool> {

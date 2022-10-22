@@ -29,6 +29,17 @@ impl AuthorBook {
         .await?;
         Ok(link)
     }
+    pub async fn delete_about_book(book: Uuid) -> Result<()> {
+        let db = get_pool().await?;
+        sqlx::query!(
+            "DELETE FROM authors_books
+             WHERE book = $1",
+            book
+        )
+        .execute(db)
+        .await?;
+        Ok(())
+    }
     pub async fn write_many(links: &[Self]) -> Result<Vec<Self>> {
         let db = get_pool().await?;
         let json = serde_json::to_value(links)?;
@@ -69,5 +80,16 @@ impl TagBook {
             .fetch_all(db)
             .await?;
         Ok(links)
+    }
+    pub async fn delete_about_book(book: Uuid) -> Result<()> {
+        let db = get_pool().await?;
+        sqlx::query!(
+            "DELETE FROM tags_books
+             WHERE book = $1",
+            book
+        )
+        .execute(db)
+        .await?;
+        Ok(())
     }
 }

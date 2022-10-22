@@ -69,6 +69,7 @@ impl Book {
         self.date_started = date;
         self.update().await
     }
+    /// Set self.finished_reading
     pub async fn set_date_finished(&mut self, date: Option<NaiveDate>) -> Result<()> {
         self.date_finished = date;
         self.update().await
@@ -77,8 +78,19 @@ impl Book {
     async fn update(&self) -> Result<()> {
         let db = get_pool().await?;
         sqlx::query!(
-            "UPDATE books SET title = $2, year = $3, date_started = $4, date_finished = $5 WHERE uuid = $1",
+            "UPDATE books
+             SET title = $2, year = $3, date_started = $4, date_finished = $5
+             WHERE uuid = $1",
             self.uuid, &self.title, self.year, self.date_started, self.date_finished
+        ).execute(db).await?;
+        Ok(())
+    }
+    pub async fn delete(&self) -> Result<()> {
+        let db = get_pool().await?;
+        sqlx::query!(
+            "DELETE FROM books
+             WHERE uuid = $1",
+            self.uuid
         ).execute(db).await?;
         Ok(())
     }

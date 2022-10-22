@@ -43,6 +43,13 @@ pub async fn insert<T: Deref<Target = str>>(
     Ok(())
 }
 
+pub async fn delete(uuid: Uuid) -> Result<()> {
+    let book = db::Book::from_uuid(uuid).await?;
+    db::AuthorBook::delete_about_book(uuid).await?;
+    db::TagBook::delete_about_book(uuid).await?;
+    book.delete().await
+}
+
 pub async fn start(uuid: Uuid, date: Option<NaiveDate>) -> Result<()> {
     let date = match date {
         None => chrono::Local::now().date_naive(),
