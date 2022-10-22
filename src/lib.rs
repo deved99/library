@@ -13,6 +13,7 @@ mod actions {
 
 use clap::Parser;
 use cli::Cli;
+use env_logger;
 
 // Re-exports
 pub use error_handling::{Error, Result};

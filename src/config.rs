@@ -11,12 +11,18 @@ pub fn get_config() -> Result<&'static Config> {
     }
 }
 
+/// Load configuration. Also, it initializes logger.
 pub fn load_config(args: &Cli) -> Result<()> {
     if CONFIG.get().is_some() {
         panic!("Config is not loaded, panicking.")
     }
+
+    // Create Config, initialize & set logger.
     let config = Config::new(args);
+    config.init_logger();
     CONFIG.set(config).unwrap();
+
+    log::debug!("Loaded configuration.");
     Ok(())
 }
 
@@ -32,10 +38,15 @@ impl Config {
         let json = args.json;
         let unattended = args.unattended;
         let config_path = &args.config;
+
         Self {
             verbose,
             json,
             unattended,
         }
+    }
+    fn init_logger(&self) {
+        env_logger::init();
+        log::debug!("Initialized logger.");
     }
 }
