@@ -81,8 +81,14 @@ impl Book {
             "UPDATE books
              SET title = $2, year = $3, date_started = $4, date_finished = $5
              WHERE uuid = $1",
-            self.uuid, &self.title, self.year, self.date_started, self.date_finished
-        ).execute(db).await?;
+            self.uuid,
+            &self.title,
+            self.year,
+            self.date_started,
+            self.date_finished
+        )
+        .execute(db)
+        .await?;
         Ok(())
     }
     pub async fn delete(&self) -> Result<()> {
@@ -91,7 +97,9 @@ impl Book {
             "DELETE FROM books
              WHERE uuid = $1",
             self.uuid
-        ).execute(db).await?;
+        )
+        .execute(db)
+        .await?;
         Ok(())
     }
 }

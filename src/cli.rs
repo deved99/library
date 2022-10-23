@@ -3,9 +3,12 @@ use std::path::PathBuf;
 use crate::actions;
 use crate::Result;
 
-use chrono;
 use clap::{Parser, Subcommand};
-use uuid::Uuid;
+
+mod book;
+mod author;
+mod tag;
+mod dump;
 
 #[derive(Parser)]
 pub struct Cli {
@@ -36,19 +39,19 @@ pub enum Command {
 
     /// Actions related to a book
     #[command(subcommand)]
-    Book(Book),
+    Book(book::Book),
 
     /// Actions related to an author
     #[command(subcommand)]
-    Author(Author),
+    Author(author::Author),
 
     /// Actions related to a tag
     #[command(subcommand)]
-    Tag(Tag),
+    Tag(tag::Tag),
 
     /// Import, export a Dump
     #[command(subcommand)]
-    Dump(Dump),
+    Dump(dump::Dump),
 
     Test,
 }
@@ -61,107 +64,6 @@ impl Command {
             Self::Tag(t) => t.execute().await,
             Self::Dump(d) => d.execute().await,
             Self::Test => test(),
-        }
-    }
-}
-
-#[derive(Subcommand)]
-pub enum Book {
-    /// List books in the reading list
-    List,
-    /// Insert a book in the database
-    Insert {
-        #[arg(long)]
-        title: String,
-        #[arg(long)]
-        author: String,
-        #[arg(long)]
-        year: i16,
-        #[arg(long)]
-        tag: Vec<String>,
-    },
-    Delete {
-        uuid: Uuid
-    },
-    /// Start a book
-    Start {
-        #[arg(long)]
-        uuid: Uuid,
-        #[arg(long)]
-        date: Option<chrono::NaiveDate>,
-    },
-    /// Finish a book
-    Finish {
-        #[arg(long)]
-        uuid: Uuid,
-        #[arg(long)]
-        date: Option<chrono::NaiveDate>,
-    },
-}
-impl Book {
-    pub async fn execute(self) -> Result<()> {
-        match self {
-            Self::List => actions::book::list().await,
-            Self::Insert {
-                title,
-                year,
-                author,
-                tag,
-            } => actions::book::insert(&title, &author, year, &tag).await,
-            Self::Delete { uuid } => actions::book::delete(uuid).await,
-            Self::Start { uuid, date } => actions::book::start(uuid, date).await,
-            Self::Finish { uuid, date } => actions::book::finish(uuid, date).await,
-        }
-    }
-}
-
-#[derive(Subcommand)]
-pub enum Author {
-    /// List books in the reading list
-    List,
-    /// Insert a book in the database
-    Insert {
-        #[arg(long)]
-        name: String,
-        #[arg(long)]
-        lang: String,
-    },
-}
-impl Author {
-    pub async fn execute(self) -> Result<()> {
-        match self {
-            Self::List => actions::author::list().await,
-            Self::Insert { name, lang } => actions::author::insert(&name, &lang).await,
-        }
-    }
-}
-
-#[derive(Subcommand)]
-pub enum Tag {
-    List,
-}
-impl Tag {
-    pub async fn execute(self) -> Result<()> {
-        match self {
-            Self::List => actions::tag::list().await,
-        }
-    }
-}
-
-#[derive(Subcommand)]
-pub enum Dump {
-    Import {
-        /// File to import
-        path: String,
-    },
-    Export,
-}
-
-impl Dump {
-    pub async fn execute(self) -> Result<()> {
-        match self {
-            Self::Import { path } => actions::dump::import(path).await,
-            Self::Export => actions::dump::export().await,
         }
     }
 }
