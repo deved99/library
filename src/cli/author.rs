@@ -1,6 +1,5 @@
 use crate::{actions, Result};
 use clap::Subcommand;
-use uuid::Uuid;
 
 #[derive(Subcommand)]
 pub enum Author {

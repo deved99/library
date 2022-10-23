@@ -1,5 +1,3 @@
-use std::arch::x86_64::_mm_add_ss;
-
 use crate::miscutils::{add_default, ask, confirm};
 use crate::{actions, db, Result};
 use chrono;
@@ -44,7 +42,7 @@ impl Book {
 }
 
 #[derive(Args, Debug)]
-struct InsertBook {
+pub struct InsertBook {
     #[arg(long)]
     title: Option<String>,
     #[arg(long)]
