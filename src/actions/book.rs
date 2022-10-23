@@ -1,5 +1,5 @@
 use crate::db;
-use crate::{Error, Result};
+use crate::Result;
 use chrono::{self, NaiveDate};
 use std::ops::Deref;
 use uuid::Uuid;
@@ -12,20 +12,10 @@ pub async fn list() -> Result<()> {
 
 pub async fn insert<T: Deref<Target = str>>(
     title: &str,
-    author: &str,
+    author: &db::Author,
     year: i16,
     tags: &[T],
 ) -> Result<()> {
-    let artists = db::Author::find(author).await?;
-    let author = match artists.len() {
-        1 => &artists[0],
-        _ => {
-            return Err(Error::UnexpectedResultNumber {
-                expected: 1,
-                results: format!("{:?}", artists),
-            })
-        }
-    };
     let book = db::Book::new(title, year).await?;
     println!("Inserted:");
     println!("{:?}", book);

@@ -5,10 +5,10 @@ use crate::Result;
 
 use clap::{Parser, Subcommand};
 
-mod book;
 mod author;
-mod tag;
+mod book;
 mod dump;
+mod tag;
 
 #[derive(Parser)]
 pub struct Cli {
@@ -70,7 +70,7 @@ impl Command {
 
 use crate::miscutils;
 fn test() -> Result<()> {
-    let s = miscutils::confirm()?;
+    let s = miscutils::confirm(true)?;
     println!("You wrote {:?}", s);
     Ok(())
 }

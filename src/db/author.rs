@@ -36,6 +36,17 @@ impl Author {
         Ok(authors)
     }
     // Read
+    pub async fn exists(name: &str) -> Result<Option<Self>> {
+        let db = get_pool().await?;
+        let result = sqlx::query_as!(
+            Self,
+            "SELECT uuid, name, nationality FROM authors WHERE name = $1",
+            name
+        )
+        .fetch_optional(db)
+        .await?;
+        Ok(result)
+    }
     pub async fn find(name: &str) -> Result<Vec<Self>> {
         let db = get_pool().await?;
         let result = sqlx::query_as!(
