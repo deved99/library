@@ -8,13 +8,13 @@ use uuid::Uuid;
 pub struct Book {
     uuid: Uuid,
     title: String,
-    year: i16,
     date_started: Option<NaiveDate>,
     date_finished: Option<NaiveDate>,
+    year: Option<i16>,
 }
 impl Book {
     // Create
-    pub async fn new(title: &str, year: i16) -> Result<Self> {
+    pub async fn new(title: &str, year: Option<i16>) -> Result<Self> {
         let db = get_pool().await?;
         let result: Self = sqlx::query_as!(
             Self,
@@ -112,10 +112,14 @@ impl AsRow for Book {
             .collect()
     }
     fn columns(&self) -> Vec<String> {
+        let year_str = match self.year {
+            Some(n) => n.to_string(),
+            None => String::new()
+        };
         vec![
             format!("{}", self.uuid),
             format!("{}", self.title),
-            format!("{}", self.year),
+            year_str,
             format!("{:?}", self.date_started),
             format!("{:?}", self.date_finished),
         ]
@@ -126,7 +130,7 @@ impl AsRow for Book {
 pub struct BookDump {
     uuid: Uuid,
     title: String,
-    year: i16,
+    year: Option<i16>,
     date_started: Option<NaiveDate>,
     date_finished: Option<NaiveDate>,
     authors: Vec<Uuid>,

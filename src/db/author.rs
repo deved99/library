@@ -9,18 +9,16 @@ use uuid::Uuid;
 pub struct Author {
     uuid: Uuid,
     name: String,
-    nationality: String,
 }
 impl Author {
     /// Create a new Author, writing it to the database.
-    pub async fn new(name: &str, nationality: &str) -> Result<Self> {
+    pub async fn new(name: &str) -> Result<Self> {
         let db = get_pool().await?;
         let result = sqlx::query_as!(
             Self,
-            "INSERT INTO authors (name, nationality) VALUES ($1, $2)
-             RETURNING uuid, name, nationality",
-            name,
-            nationality
+            "INSERT INTO authors (name) VALUES ($1)
+             RETURNING uuid, name",
+            name
         )
         .fetch_one(db)
         .await?;
@@ -40,7 +38,7 @@ impl Author {
         let db = get_pool().await?;
         let result = sqlx::query_as!(
             Self,
-            "SELECT uuid, name, nationality FROM authors WHERE name = $1",
+            "SELECT uuid, name FROM authors WHERE name = $1",
             name
         )
         .fetch_optional(db)
@@ -51,7 +49,7 @@ impl Author {
         let db = get_pool().await?;
         let result = sqlx::query_as!(
             Self,
-            "SELECT uuid,name,nationality FROM authors WHERE name = $1",
+            "SELECT uuid,name FROM authors WHERE name = $1",
             name
         )
         .fetch_all(db)
@@ -60,7 +58,7 @@ impl Author {
     }
     pub async fn list() -> Result<Vec<Self>> {
         let db = get_pool().await?;
-        let results = sqlx::query_as!(Self, "SELECT uuid, name, nationality FROM authors")
+        let results = sqlx::query_as!(Self, "SELECT uuid, name FROM authors")
             .fetch_all(db)
             .await?;
         Ok(results)
@@ -73,10 +71,9 @@ impl Author {
     async fn update(&self) -> Result<()> {
         let db = get_pool().await?;
         sqlx::query!(
-            "UPDATE authors SET name = $2, nationality = $3 WHERE uuid = $1",
+            "UPDATE authors SET name = $2 WHERE uuid = $1",
             self.uuid,
             &self.name,
-            &self.nationality
         )
         .execute(db)
         .await?;
@@ -86,7 +83,7 @@ impl Author {
 
 impl AsRow for Author {
     fn titles() -> Vec<String> {
-        ["uuid", "author", "nationality"]
+        ["uuid", "author"]
             .iter()
             .map(|x| x.to_string())
             .collect()
@@ -95,7 +92,6 @@ impl AsRow for Author {
         vec![
             format!("{}", self.uuid),
             format!("{}", self.name),
-            format!("{}", self.nationality),
         ]
     }
 }

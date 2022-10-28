@@ -9,8 +9,6 @@ pub enum Author {
     Insert {
         #[arg(long)]
         name: String,
-        #[arg(long)]
-        lang: String,
     },
 }
 
@@ -18,7 +16,7 @@ impl Author {
     pub async fn execute(self) -> Result<()> {
         match self {
             Self::List => actions::author::list().await,
-            Self::Insert { name, lang } => actions::author::insert(&name, &lang).await,
+            Self::Insert { name } => actions::author::insert(&name).await,
         }
     }
 }

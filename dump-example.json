@@ -51,33 +51,27 @@
   "authors": [
     {
       "uuid": "7c125ac7-0041-4788-823f-79a4c3ac3419",
-      "name": "George Orwell",
-      "nationality": "English"
+      "name": "George Orwell"
     },
     {
       "uuid": "e211d261-0eb8-4f58-9887-adb309887633",
-      "name": "Lois Lowry",
-      "nationality": "American"
+      "name": "Lowry, Lois"
     },
     {
       "uuid": "89ac0a08-ad6a-4bc3-b0bb-a8459e28a20c",
-      "name": "Fichte, Johann Gottlieb",
-      "nationality": "Deutsh"
+      "name": "Fichte, Johann Gottlieb"
     },
     {
       "uuid": "8879e377-7a4c-42ca-b221-914bb33fecf5",
-      "name": "Freud, Sigmund",
-      "nationality": "Austrian"
+      "name": "Freud, Sigmund"
     },
     {
       "uuid": "36a829f5-555b-4abd-bc8b-6cdc870034c4",
-      "name": "Nietzsche",
-      "nationality": "Deutsh"
+      "name": "Nietzsche"
     },
     {
       "uuid": "7265ab80-5377-418c-84f9-760db3d1d05e",
-      "name": "Abbot, Edwin Abbott Abbott",
-      "nationality": "English"
+      "name": "Abbot, Edwin Abbott Abbott"
     }
   ]
 }

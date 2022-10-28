@@ -13,7 +13,7 @@ pub async fn list() -> Result<()> {
 pub async fn insert<T: Deref<Target = str>>(
     title: &str,
     author: &db::Author,
-    year: i16,
+    year: Option<i16>,
     tags: &[T],
 ) -> Result<()> {
     let book = db::Book::new(title, year).await?;

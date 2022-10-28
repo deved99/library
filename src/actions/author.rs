@@ -7,8 +7,8 @@ pub async fn list() -> Result<()> {
     Ok(())
 }
 
-pub async fn insert(name: &str, lang: &str) -> Result<()> {
-    let book = db::Author::new(name, lang).await?;
+pub async fn insert(name: &str) -> Result<()> {
+    let book = db::Author::new(name).await?;
     println!("{:?}", book);
     Ok(())
 }

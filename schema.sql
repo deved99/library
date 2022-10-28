@@ -17,17 +17,17 @@ CREATE TABLE books(
   uuid UUID NOT NULL DEFAULT uuid_generate_v4(),
   CONSTRAINT uuid_books PRIMARY KEY ( uuid ),
   title TEXT NOT NULL,
-  year SMALLINT NOT NULL,
   -- state reading_state NOT NULL DEFAULT 'to_read'
   date_started DATE,
   date_finished DATE
+  -- Additional data
+  year SMALLINT,
 );
 
 CREATE TABLE authors(
   uuid UUID NOT NULL DEFAULT uuid_generate_v4(),
   CONSTRAINT uuid_authors PRIMARY KEY ( uuid ),
-  name TEXT NOT NULL,
-  nationality TEXT NOT NULL
+  name TEXT NOT NULL
 );
 
 CREATE TABLE authors_books(

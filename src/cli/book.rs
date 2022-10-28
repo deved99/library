@@ -64,16 +64,10 @@ impl InsertBook {
         // Ensure the choosen author exists, else create it
         let author = match db::Author::exists(&author).await? {
             Some(a) => a,
-            None => {
-                let mut nationality = String::new();
-                while nationality.is_empty() || !confirm(true)? {
-                    nationality = ask("Nationality?")?;
-                }
-                db::Author::new(&author, &nationality).await?
-            }
+            None => db::Author::new(&author).await?
         };
         // Finally insert
-        actions::book::insert(&title, &author, year, &self.tag).await
+        actions::book::insert(&title, &author, self.year, &self.tag).await
     }
     fn fill(&mut self) -> Result<()> {
         while self.is_something_missing() || !self.confirm() {
