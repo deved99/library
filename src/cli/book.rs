@@ -59,7 +59,6 @@ impl InsertBook {
         self.fill()?;
         // Now I can unwrap
         let title = self.title.unwrap();
-        let year = self.year.unwrap();
         let author = self.author.unwrap();
         // Ensure the choosen author exists, else create it
         let author = match db::Author::exists(&author).await? {
@@ -81,16 +80,6 @@ impl InsertBook {
             if !author.is_empty() {
                 self.author = Some(author);
             }
-            // Set year
-            let year = ask(&add_default("Year?", &self.year))?;
-            match year.parse::<i16>() {
-                Err(e) => {
-                    log::error!("Error: {}", e);
-                }
-                Ok(n) => {
-                    self.year = Some(n);
-                }
-            };
             println!("");
         }
         Ok(())
@@ -106,6 +95,6 @@ impl InsertBook {
         }
     }
     fn is_something_missing(&self) -> bool {
-        self.title.is_none() || self.year.is_none() || self.author.is_none()
+        self.title.is_none() || self.author.is_none()
     }
 }

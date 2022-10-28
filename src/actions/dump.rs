@@ -10,9 +10,17 @@ pub async fn import(path: impl AsRef<Path>) -> Result<()> {
     dumps.import().await
 }
 
-pub async fn export() -> Result<()> {
+pub async fn export(path: Option<impl AsRef<Path>>) -> Result<()> {
     let dump = db::Dump::export().await?;
-    let json = serde_json::to_string(&dump)?;
-    println!("{}", json);
+    match path {
+        Some(p) => {
+            let writer = File::create(p)?;
+            serde_json::to_writer_pretty(writer, &dump)?;
+        }
+        None => {
+            let json = serde_json::to_string(&dump)?;
+            println!("{}", json);
+        }
+    }
     Ok(())
 }

@@ -7,7 +7,6 @@ use clap::{Parser, Subcommand};
 
 mod author;
 mod book;
-mod dump;
 mod tag;
 
 #[derive(Parser)]
@@ -49,10 +48,19 @@ pub enum Command {
     #[command(subcommand)]
     Tag(tag::Tag),
 
-    /// Import, export a Dump
-    #[command(subcommand)]
-    Dump(dump::Dump),
+    /// Import a json file
+    Import{
+        /// Path to the file containing the data to import
+        path: PathBuf
+    },
 
+    /// Export a json file
+    Export{
+        /// Path to the file where dumps will be saved; if none print to stdout
+        path: Option<PathBuf>
+    },
+
+    /// Currently testing
     Test,
 }
 impl Command {
@@ -62,7 +70,8 @@ impl Command {
             Self::Book(b) => b.execute().await,
             Self::Author(a) => a.execute().await,
             Self::Tag(t) => t.execute().await,
-            Self::Dump(d) => d.execute().await,
+            Self::Import { path } => actions::dump::import(path).await,
+            Self::Export { path } => actions::dump::export(path).await,
             Self::Test => test(),
         }
     }
