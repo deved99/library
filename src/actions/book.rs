@@ -23,7 +23,7 @@ pub async fn insert<T: Deref<Target = str>>(
     // // Author
     let author_link = db::AuthorBook::write_new(author.uuid(), book.uuid()).await?;
     // // Tag
-    println!("Linked artist:\n {:?}", author_link);
+    println!("Linked artist:\n{:?}", author_link);
     println!("Linking tags:");
     for tag in tags {
         db::Tag::find_or_create(tag).await?;

@@ -79,27 +79,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "book"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "clap",
- "dotenv_codegen",
- "env_logger",
- "futures",
- "itertools",
- "log",
- "once_cell",
- "prettytable-rs",
- "serde",
- "serde_json",
- "sqlx",
- "thiserror",
- "tokio",
- "uuid",
-]
-
-[[package]]
 name = "bstr"
 version = "0.2.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -774,6 +753,27 @@ name = "libc"
 version = "0.2.134"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "329c933548736bc49fd575ee68c89e8be4d260064184389a5b77517cddd99ffb"
+
+[[package]]
+name = "library"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "clap",
+ "dotenv_codegen",
+ "env_logger",
+ "futures",
+ "itertools",
+ "log",
+ "once_cell",
+ "prettytable-rs",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "thiserror",
+ "tokio",
+ "uuid",
+]
 
 [[package]]
 name = "link-cplusplus"
