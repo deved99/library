@@ -10,6 +10,7 @@ pub enum Book {
     List,
     /// Insert a book in the database
     Insert(InsertBook),
+    /// Delete a book from the database
     Delete {
         uuid: Uuid,
     },

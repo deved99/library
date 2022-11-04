@@ -9,6 +9,7 @@ mod actions {
     pub mod book;
     pub mod dump;
     pub mod tag;
+    pub mod views;
 }
 
 use clap::Parser;

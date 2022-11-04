@@ -16,6 +16,7 @@ mod book;
 mod dump;
 mod links;
 mod tag;
+mod views;
 
 // Re export
 use crate::config;
@@ -25,6 +26,7 @@ pub use book::{Book, BookDump};
 pub use dump::Dump;
 pub use links::{AuthorBook, TagBook};
 pub use tag::Tag;
+pub use views::ReadingList;
 
 //// Functions
 

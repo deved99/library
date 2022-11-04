@@ -15,7 +15,7 @@ pub struct Cli {
     #[arg(long)]
     pub json: bool,
 
-    /// Don't ask for interaction (default if stdin != tty)
+    /// Don't ask for interaction
     #[arg(long)]
     pub unattended: bool,
 
@@ -34,7 +34,7 @@ pub struct Cli {
 #[derive(Subcommand)]
 pub enum Command {
     /// List books in the reading list
-    List,
+    Show,
 
     /// Actions related to a book
     #[command(subcommand)]
@@ -66,7 +66,7 @@ pub enum Command {
 impl Command {
     pub async fn execute(self) -> Result<()> {
         match self {
-            Self::List => actions::book::list().await,
+            Self::Show => actions::views::reading_list().await,
             Self::Book(b) => b.execute().await,
             Self::Author(a) => a.execute().await,
             Self::Tag(t) => t.execute().await,

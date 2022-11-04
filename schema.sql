@@ -1,10 +1,10 @@
 -- Cleanup
+DROP VIEW IF EXISTS reading_list;
 DROP TABLE IF EXISTS authors_books;
 DROP TABLE IF EXISTS tags_books;
 DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS authors;
 DROP TABLE IF EXISTS tags;
-DROP TYPE IF EXISTS reading_state;
 
 -- Add uuid functions
 
@@ -12,16 +12,15 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Actual tables
 
-CREATE TYPE reading_state AS ENUM ('finished', 'to_read', 'reading');
 CREATE TABLE books(
   uuid UUID NOT NULL DEFAULT uuid_generate_v4(),
   CONSTRAINT uuid_books PRIMARY KEY ( uuid ),
   title TEXT NOT NULL,
   -- state reading_state NOT NULL DEFAULT 'to_read'
   date_started DATE,
-  date_finished DATE
+  date_finished DATE,
   -- Additional data
-  year SMALLINT,
+  year SMALLINT
 );
 
 CREATE TABLE authors(
@@ -44,3 +43,25 @@ CREATE TABLE tags_books(
   tag TEXT NOT NULL REFERENCES tags (name),
   book UUID NOT NULL REFERENCES books (uuid)
 );
+
+-- Views
+
+CREATE VIEW reading_list AS
+SELECT b.uuid,
+    b.title,
+    b.date_started,
+    b.date_finished,
+    COALESCE(la.authors, '{}'::text[]) AS authors,
+    COALESCE(lt.tags, '{}'::text[]) AS tags
+FROM books b
+LEFT JOIN (
+        SELECT l.book, array_agg(a.name) AS authors
+        FROM authors_books l
+        LEFT JOIN authors a ON a.uuid = l.author
+        GROUP BY l.book
+    ) AS la ON b.uuid = la.book
+LEFT JOIN (
+        SELECT tags_books.book, array_agg(tags_books.tag) AS tags
+        FROM tags_books
+        GROUP BY tags_books.book
+    ) lt ON b.uuid = lt.book;
