@@ -116,12 +116,16 @@ impl AsRow for Book {
             Some(n) => n.to_string(),
             None => String::new()
         };
+        let display_optional_date = |date: Option<NaiveDate>| match date {
+            None => "".to_string(),
+            Some(d) => d.to_string()
+        };
         vec![
             format!("{}", self.uuid),
             format!("{}", self.title),
             year_str,
-            format!("{:?}", self.date_started),
-            format!("{:?}", self.date_finished),
+            display_optional_date(self.date_started),
+            display_optional_date(self.date_finished)
         ]
     }
 }
