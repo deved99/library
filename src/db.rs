@@ -15,6 +15,7 @@ mod author;
 mod book;
 mod dump;
 mod links;
+pub mod schema;
 mod tag;
 mod views;
 

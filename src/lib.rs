@@ -8,6 +8,7 @@ mod actions {
     pub mod author;
     pub mod book;
     pub mod dump;
+    pub mod schema;
     pub mod tag;
     pub mod views;
 }

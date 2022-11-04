@@ -60,6 +60,13 @@ pub enum Command {
         path: Option<PathBuf>
     },
 
+    /// Reset/init the database schema
+    Reset{
+        /// I'm sure, I really am sure
+        #[arg(long)]
+        force: bool
+    },
+
     /// Currently testing
     Test,
 }
@@ -72,6 +79,7 @@ impl Command {
             Self::Tag(t) => t.execute().await,
             Self::Import { path } => actions::dump::import(path).await,
             Self::Export { path } => actions::dump::export(path).await,
+            Self::Reset { force } => actions::schema::reset(force).await,
             Self::Test => test(),
         }
     }

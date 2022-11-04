@@ -11,4 +11,6 @@ pub enum Error {
     IO(#[from] std::io::Error),
     #[error("Unexpected number of results: expected {expected}, found: \n{results}")]
     UnexpectedResultNumber { expected: usize, results: String },
+    #[error("Missing some arguments: expected {expected}")]
+    MissingArgument { expected: String }
 }
