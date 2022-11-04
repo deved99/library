@@ -59,3 +59,11 @@ pub async fn finish(uuid: Uuid, date: Option<NaiveDate>) -> Result<()> {
     book.set_date_finished(Some(date)).await?;
     Ok(())
 }
+
+
+pub async fn reset_date(uuid: Uuid) -> Result<()> {
+    let mut book = db::Book::from_uuid(uuid).await?;
+    book.set_date_started(None).await?;
+    book.set_date_finished(None).await?;
+    Ok(())
+}

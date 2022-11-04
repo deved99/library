@@ -16,18 +16,21 @@ pub enum Book {
     },
     /// Start a book
     Start {
-        #[arg(long)]
         uuid: Uuid,
         #[arg(long)]
         date: Option<chrono::NaiveDate>,
     },
     /// Finish a book
     Finish {
-        #[arg(long)]
         uuid: Uuid,
         #[arg(long)]
         date: Option<chrono::NaiveDate>,
     },
+    /// Reset started_date and finished date of a book
+    #[command(name="date-reset")]
+    DateReset {
+        uuid: Uuid
+    }
 }
 
 impl Book {
@@ -38,6 +41,7 @@ impl Book {
             Self::Delete { uuid } => actions::book::delete(uuid).await,
             Self::Start { uuid, date } => actions::book::start(uuid, date).await,
             Self::Finish { uuid, date } => actions::book::finish(uuid, date).await,
+            Self::DateReset { uuid } => actions::book::reset_date(uuid).await
         }
     }
 }
