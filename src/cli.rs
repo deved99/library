@@ -49,22 +49,22 @@ pub enum Command {
     Tag(tag::Tag),
 
     /// Import a json file
-    Import{
+    Import {
         /// Path to the file containing the data to import
-        path: PathBuf
+        path: PathBuf,
     },
 
     /// Export a json file
-    Export{
+    Export {
         /// Path to the file where dumps will be saved; if none print to stdout
-        path: Option<PathBuf>
+        path: Option<PathBuf>,
     },
 
     /// Reset/init the database schema
-    Reset{
+    Reset {
         /// I'm sure, I really am sure
         #[arg(long)]
-        force: bool
+        force: bool,
     },
 
     /// Currently testing

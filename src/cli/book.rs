@@ -11,9 +11,7 @@ pub enum Book {
     /// Insert a book in the database
     Insert(InsertBook),
     /// Delete a book from the database
-    Delete {
-        uuid: Uuid,
-    },
+    Delete { uuid: Uuid },
     /// Start a book
     Start {
         uuid: Uuid,
@@ -27,10 +25,8 @@ pub enum Book {
         date: Option<chrono::NaiveDate>,
     },
     /// Reset started_date and finished date of a book
-    #[command(name="date-reset")]
-    DateReset {
-        uuid: Uuid
-    }
+    #[command(name = "date-reset")]
+    DateReset { uuid: Uuid },
 }
 
 impl Book {
@@ -41,7 +37,7 @@ impl Book {
             Self::Delete { uuid } => actions::book::delete(uuid).await,
             Self::Start { uuid, date } => actions::book::start(uuid, date).await,
             Self::Finish { uuid, date } => actions::book::finish(uuid, date).await,
-            Self::DateReset { uuid } => actions::book::reset_date(uuid).await
+            Self::DateReset { uuid } => actions::book::reset_date(uuid).await,
         }
     }
 }
@@ -68,7 +64,7 @@ impl InsertBook {
         // Ensure the choosen author exists, else create it
         let author = match db::Author::exists(&author).await? {
             Some(a) => a,
-            None => db::Author::new(&author).await?
+            None => db::Author::new(&author).await?,
         };
         // Finally insert
         actions::book::insert(&title, &author, self.year, &self.tag).await

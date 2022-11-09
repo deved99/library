@@ -11,7 +11,7 @@ pub struct ReadingList {
     date_started: Option<NaiveDate>,
     date_finished: Option<NaiveDate>,
     authors: Vec<String>,
-    tags: Vec<String>
+    tags: Vec<String>,
 }
 impl ReadingList {
     pub async fn get() -> Result<Vec<Self>> {
@@ -40,9 +40,10 @@ impl AsRow for ReadingList {
             (None, None) => "unread",
             (None, Some(_)) => {
                 log::error!("{:?}", self);
-                "Book finished without a start date"   
+                "Book finished without a start date"
             }
-        }.to_string();
+        }
+        .to_string();
         vec![
             format!("{}", self.title),
             format!("{}", self.authors.join("; ")),

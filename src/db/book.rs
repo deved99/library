@@ -114,18 +114,18 @@ impl AsRow for Book {
     fn columns(&self) -> Vec<String> {
         let year_str = match self.year {
             Some(n) => n.to_string(),
-            None => String::new()
+            None => String::new(),
         };
         let display_optional_date = |date: Option<NaiveDate>| match date {
             None => "".to_string(),
-            Some(d) => d.to_string()
+            Some(d) => d.to_string(),
         };
         vec![
             format!("{}", self.uuid),
             format!("{}", self.title),
             year_str,
             display_optional_date(self.date_started),
-            display_optional_date(self.date_finished)
+            display_optional_date(self.date_finished),
         ]
     }
 }

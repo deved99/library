@@ -36,24 +36,16 @@ impl Author {
     // Read
     pub async fn exists(name: &str) -> Result<Option<Self>> {
         let db = get_pool().await?;
-        let result = sqlx::query_as!(
-            Self,
-            "SELECT uuid, name FROM authors WHERE name = $1",
-            name
-        )
-        .fetch_optional(db)
-        .await?;
+        let result = sqlx::query_as!(Self, "SELECT uuid, name FROM authors WHERE name = $1", name)
+            .fetch_optional(db)
+            .await?;
         Ok(result)
     }
     pub async fn find(name: &str) -> Result<Vec<Self>> {
         let db = get_pool().await?;
-        let result = sqlx::query_as!(
-            Self,
-            "SELECT uuid,name FROM authors WHERE name = $1",
-            name
-        )
-        .fetch_all(db)
-        .await?;
+        let result = sqlx::query_as!(Self, "SELECT uuid,name FROM authors WHERE name = $1", name)
+            .fetch_all(db)
+            .await?;
         Ok(result)
     }
     pub async fn list() -> Result<Vec<Self>> {
@@ -83,15 +75,9 @@ impl Author {
 
 impl AsRow for Author {
     fn titles() -> Vec<String> {
-        ["uuid", "author"]
-            .iter()
-            .map(|x| x.to_string())
-            .collect()
+        ["uuid", "author"].iter().map(|x| x.to_string()).collect()
     }
     fn columns(&self) -> Vec<String> {
-        vec![
-            format!("{}", self.uuid),
-            format!("{}", self.name),
-        ]
+        vec![format!("{}", self.uuid), format!("{}", self.name)]
     }
 }

@@ -12,5 +12,5 @@ pub enum Error {
     #[error("Unexpected number of results: expected {expected}, found: \n{results}")]
     UnexpectedResultNumber { expected: usize, results: String },
     #[error("Missing some arguments: expected {expected}")]
-    MissingArgument { expected: String }
+    MissingArgument { expected: String },
 }
