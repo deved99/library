@@ -1,4 +1,4 @@
-use crate::db::{self, get_pool, AsRow, Result};
+use crate::db::{get_pool, AsRow, Result};
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 use sqlx;

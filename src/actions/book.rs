@@ -4,11 +4,7 @@ use chrono::{self, NaiveDate};
 use std::ops::Deref;
 use uuid::Uuid;
 
-pub async fn list() -> Result<()> {
-    let books = db::Book::list().await?;
-    db::print_table(&books)?;
-    Ok(())
-}
+// CREATE //
 
 pub async fn insert<T: Deref<Target = str>>(
     title: &str,
@@ -33,11 +29,37 @@ pub async fn insert<T: Deref<Target = str>>(
     Ok(())
 }
 
-pub async fn delete(uuid: Uuid) -> Result<()> {
-    let book = db::Book::from_uuid(uuid).await?;
-    db::AuthorBook::delete_about_book(uuid).await?;
-    db::TagBook::delete_about_book(uuid).await?;
-    book.delete().await
+// READ //
+
+pub async fn list() -> Result<()> {
+    let books = db::Book::list().await?;
+    db::print_table(&books)?;
+    Ok(())
+}
+
+// UPDATE //
+
+pub async fn update(
+    uuid: Uuid,
+    title: Option<impl Deref<Target = str>>,
+    year: Option<i16>,
+    date_started: Option<NaiveDate>,
+    date_finished: Option<NaiveDate>,
+) -> Result<()> {
+    let mut book = db::Book::from_uuid(uuid).await?;
+    if let Some(x) = title {
+        book.set_title(&x).await?;
+    }
+    if let Some(x) = year {
+        book.set_year(x).await?;
+    }
+    if let Some(_) = date_started {
+        book.set_date_started(date_started).await?;
+    }
+    if let Some(_) = date_finished {
+        book.set_date_finished(date_finished).await?;
+    }
+    Ok(())
 }
 
 pub async fn start(uuid: Uuid, date: Option<NaiveDate>) -> Result<()> {
@@ -65,4 +87,13 @@ pub async fn reset_date(uuid: Uuid) -> Result<()> {
     book.set_date_started(None).await?;
     book.set_date_finished(None).await?;
     Ok(())
+}
+
+// DELETE //
+
+pub async fn delete(uuid: Uuid) -> Result<()> {
+    let book = db::Book::from_uuid(uuid).await?;
+    db::AuthorBook::delete_about_book(uuid).await?;
+    db::TagBook::delete_about_book(uuid).await?;
+    book.delete().await
 }

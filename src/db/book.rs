@@ -12,8 +12,9 @@ pub struct Book {
     date_finished: Option<NaiveDate>,
     year: Option<i16>,
 }
+
 impl Book {
-    // Create
+    // CREATE //
     pub async fn new(title: &str, year: Option<i16>) -> Result<Self> {
         let db = get_pool().await?;
         let result: Self = sqlx::query_as!(
@@ -28,6 +29,9 @@ impl Book {
         .await?;
         Ok(result)
     }
+
+    // READ //
+
     pub async fn from_uuid(uuid: Uuid) -> Result<Self> {
         let db = get_pool().await?;
         let book = sqlx::query_as!(
@@ -41,7 +45,6 @@ impl Book {
         .await?;
         Ok(book)
     }
-    // Read
     pub fn uuid(&self) -> Uuid {
         self.uuid
     }
@@ -55,7 +58,6 @@ impl Book {
         .await?;
         Ok(results)
     }
-    /// Write many books to the database, returns written ones.
     pub async fn write_many(books: &[Self]) -> Result<Vec<Self>> {
         let db = get_pool().await?;
         let json = serde_json::to_value(books)?;
@@ -64,6 +66,19 @@ impl Book {
             .await?;
         Ok(books)
     }
+
+    // UPDATE //
+
+    pub async fn set_title(&mut self, title: &str) -> Result<()> {
+        self.title = title.to_string();
+        self.update().await
+    }
+
+    pub async fn set_year(&mut self, year: i16) -> Result<()> {
+        self.year = Some(year);
+        self.update().await
+    }
+
     /// Set self.started_reading
     pub async fn set_date_started(&mut self, date: Option<NaiveDate>) -> Result<()> {
         self.date_started = date;
@@ -74,7 +89,7 @@ impl Book {
         self.date_finished = date;
         self.update().await
     }
-    //// Helpers
+
     async fn update(&self) -> Result<()> {
         let db = get_pool().await?;
         sqlx::query!(
@@ -91,6 +106,9 @@ impl Book {
         .await?;
         Ok(())
     }
+
+    // DELETE //
+
     pub async fn delete(&self) -> Result<()> {
         let db = get_pool().await?;
         sqlx::query!(

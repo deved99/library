@@ -12,6 +12,18 @@ pub enum Book {
     Insert(InsertBook),
     /// Delete a book from the database
     Delete { uuid: Uuid },
+    /// Update a book
+    Update {
+        uuid: Uuid,
+        #[arg(long)]
+        title: Option<String>,
+        #[arg(long)]
+        year: Option<i16>,
+        #[arg(long)]
+        date_started: Option<chrono::NaiveDate>,
+        #[arg(long)]
+        date_finished: Option<chrono::NaiveDate>,
+    },
     /// Start a book
     Start {
         uuid: Uuid,
@@ -35,6 +47,13 @@ impl Book {
             Self::List => actions::book::list().await,
             Self::Insert(b) => b.execute().await,
             Self::Delete { uuid } => actions::book::delete(uuid).await,
+            Self::Update {
+                uuid,
+                title,
+                year,
+                date_started,
+                date_finished,
+            } => actions::book::update(uuid, title, year, date_started, date_finished).await,
             Self::Start { uuid, date } => actions::book::start(uuid, date).await,
             Self::Finish { uuid, date } => actions::book::finish(uuid, date).await,
             Self::DateReset { uuid } => actions::book::reset_date(uuid).await,
