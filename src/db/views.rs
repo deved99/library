@@ -10,7 +10,8 @@ pub struct ReadingList {
     title: String,
     date_started: Option<NaiveDate>,
     date_finished: Option<NaiveDate>,
-    authors: Vec<String>,
+    display_authors: Vec<String>,
+    order_authors: Vec<String>,
     tags: Vec<String>,
 }
 impl ReadingList {
@@ -18,7 +19,10 @@ impl ReadingList {
         let db = get_pool().await?;
         let results: Vec<Self> = sqlx::query_as_unchecked!(
             Self,
-            "SELECT uuid, title, date_started, date_finished, authors, tags FROM reading_list"
+            "SELECT uuid, title, tags,
+                    date_started, date_finished,
+                    display_authors, order_authors
+             FROM reading_list"
         )
         .fetch_all(db)
         .await?;
@@ -46,7 +50,7 @@ impl AsRow for ReadingList {
         .to_string();
         vec![
             format!("{}", self.title),
-            format!("{}", self.authors.join("; ")),
+            format!("{}", self.display_authors.join("; ")),
             format!("{}", state),
             format!("{}", self.tags.join("; ")),
         ]

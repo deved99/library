@@ -26,7 +26,8 @@ CREATE TABLE books(
 CREATE TABLE authors(
   uuid UUID NOT NULL DEFAULT uuid_generate_v4(),
   CONSTRAINT uuid_authors PRIMARY KEY ( uuid ),
-  name TEXT NOT NULL
+  display_name TEXT NOT NULL,
+  order_name TEXT NOT NULL
 );
 
 CREATE TABLE authors_books(
@@ -51,11 +52,15 @@ SELECT b.uuid,
     b.title,
     b.date_started,
     b.date_finished,
-    COALESCE(la.authors, '{}'::text[]) AS authors,
+    COALESCE(la.display_authors, '{}'::text[]) AS display_authors,
+    COALESCE(la.order_authors, '{}'::text[]) AS order_authors,
     COALESCE(lt.tags, '{}'::text[]) AS tags
-FROM books b
+FROM books AS b
 LEFT JOIN (
-        SELECT l.book, array_agg(a.name) AS authors
+        SELECT
+            l.book,
+            array_agg(a.display_name) AS display_authors,
+            array_agg(a.order_name) AS order_authors
         FROM authors_books l
         LEFT JOIN authors a ON a.uuid = l.author
         GROUP BY l.book

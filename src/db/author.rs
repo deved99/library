@@ -8,7 +8,8 @@ use uuid::Uuid;
 #[derive(PartialEq, Eq, Hash, Clone, Debug, sqlx::FromRow, Serialize, Deserialize)]
 pub struct Author {
     uuid: Uuid,
-    name: String,
+    display_name: String,
+    order_name: String,
 }
 impl Author {
     /// Create a new Author, writing it to the database.
@@ -16,8 +17,8 @@ impl Author {
         let db = get_pool().await?;
         let result = sqlx::query_as!(
             Self,
-            "INSERT INTO authors (name) VALUES ($1)
-             RETURNING uuid, name",
+            "INSERT INTO authors (display_name,order_name) VALUES ($1, $1)
+             RETURNING uuid, display_name, order_name",
             name
         )
         .fetch_one(db)
@@ -36,21 +37,29 @@ impl Author {
     // Read
     pub async fn exists(name: &str) -> Result<Option<Self>> {
         let db = get_pool().await?;
-        let result = sqlx::query_as!(Self, "SELECT uuid, name FROM authors WHERE name = $1", name)
-            .fetch_optional(db)
-            .await?;
+        let result = sqlx::query_as!(
+            Self,
+            "SELECT uuid, display_name, order_name FROM authors WHERE display_name = $1",
+            name
+        )
+        .fetch_optional(db)
+        .await?;
         Ok(result)
     }
     pub async fn find(name: &str) -> Result<Vec<Self>> {
         let db = get_pool().await?;
-        let result = sqlx::query_as!(Self, "SELECT uuid,name FROM authors WHERE name = $1", name)
-            .fetch_all(db)
-            .await?;
+        let result = sqlx::query_as!(
+            Self,
+            "SELECT uuid, display_name, order_name FROM authors WHERE display_name = $1",
+            name
+        )
+        .fetch_all(db)
+        .await?;
         Ok(result)
     }
     pub async fn list() -> Result<Vec<Self>> {
         let db = get_pool().await?;
-        let results = sqlx::query_as!(Self, "SELECT uuid, name FROM authors")
+        let results = sqlx::query_as!(Self, "SELECT uuid, display_name, order_name FROM authors")
             .fetch_all(db)
             .await?;
         Ok(results)
@@ -63,9 +72,10 @@ impl Author {
     async fn update(&self) -> Result<()> {
         let db = get_pool().await?;
         sqlx::query!(
-            "UPDATE authors SET name = $2 WHERE uuid = $1",
+            "UPDATE authors SET display_name = $2, order_name = $3 WHERE uuid = $1",
             self.uuid,
-            &self.name,
+            &self.display_name,
+            &self.order_name,
         )
         .execute(db)
         .await?;
@@ -75,9 +85,16 @@ impl Author {
 
 impl AsRow for Author {
     fn titles() -> Vec<String> {
-        ["uuid", "author"].iter().map(|x| x.to_string()).collect()
+        ["uuid", "display_name", "order_name"]
+            .iter()
+            .map(|x| x.to_string())
+            .collect()
     }
     fn columns(&self) -> Vec<String> {
-        vec![format!("{}", self.uuid), format!("{}", self.name)]
+        vec![
+            format!("{}", self.uuid),
+            format!("{}", self.display_name),
+            format!("{}", self.order_name),
+        ]
     }
 }
