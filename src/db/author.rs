@@ -46,17 +46,6 @@ impl Author {
         .await?;
         Ok(result)
     }
-    pub async fn find(name: &str) -> Result<Vec<Self>> {
-        let db = get_pool().await?;
-        let result = sqlx::query_as!(
-            Self,
-            "SELECT uuid, display_name, order_name FROM authors WHERE display_name = $1",
-            name
-        )
-        .fetch_all(db)
-        .await?;
-        Ok(result)
-    }
     pub async fn list() -> Result<Vec<Self>> {
         let db = get_pool().await?;
         let results = sqlx::query_as!(Self, "SELECT uuid, display_name, order_name FROM authors")

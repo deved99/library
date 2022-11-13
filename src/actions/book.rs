@@ -1,6 +1,8 @@
 use crate::db;
+use crate::db::Author;
 use crate::Result;
 use chrono::{self, NaiveDate};
+use futures::future::{join_all, try_join_all};
 use std::ops::Deref;
 use uuid::Uuid;
 
@@ -45,6 +47,8 @@ pub async fn update(
     year: Option<i16>,
     date_started: Option<NaiveDate>,
     date_finished: Option<NaiveDate>,
+    authors: &[impl Deref<Target = str>],
+    tags: &[impl Deref<Target = str>],
 ) -> Result<()> {
     let mut book = db::Book::from_uuid(uuid).await?;
     if let Some(x) = title {
@@ -58,6 +62,27 @@ pub async fn update(
     }
     if let Some(_) = date_finished {
         book.set_date_finished(date_finished).await?;
+    }
+    if authors.len() > 0 {
+        db::AuthorBook::delete_about_book(uuid).await?;
+        let authors_uuid = try_join_all(authors.iter().map(|a| db::Author::exists(a))).await?;
+        for (author_name, author) in authors.iter().zip(authors_uuid) {
+            match author {
+                Some(a) => db::AuthorBook::write_new(a.uuid(), uuid).await?,
+                None => {
+                    log::warn!("Creating author {}.", author_name.deref());
+                    let author = db::Author::new(author_name).await?;
+                    db::AuthorBook::write_new(author.uuid(), uuid).await?
+                }
+            };
+        }
+    }
+    if tags.len() > 0 {
+        db::TagBook::delete_about_book(uuid).await?;
+        for tag in tags {
+            db::Tag::find_or_create(tag).await?;
+            db::TagBook::write_new(tag, uuid).await?;
+        }
     }
     Ok(())
 }

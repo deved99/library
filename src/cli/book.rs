@@ -13,17 +13,7 @@ pub enum Book {
     /// Delete a book from the database
     Delete { uuid: Uuid },
     /// Update a book
-    Update {
-        uuid: Uuid,
-        #[arg(long)]
-        title: Option<String>,
-        #[arg(long)]
-        year: Option<i16>,
-        #[arg(long)]
-        date_started: Option<chrono::NaiveDate>,
-        #[arg(long)]
-        date_finished: Option<chrono::NaiveDate>,
-    },
+    Update(UpdateBook),
     /// Start a book
     Start {
         uuid: Uuid,
@@ -47,13 +37,7 @@ impl Book {
             Self::List => actions::book::list().await,
             Self::Insert(b) => b.execute().await,
             Self::Delete { uuid } => actions::book::delete(uuid).await,
-            Self::Update {
-                uuid,
-                title,
-                year,
-                date_started,
-                date_finished,
-            } => actions::book::update(uuid, title, year, date_started, date_finished).await,
+            Self::Update(update_book) => update_book.execute().await,
             Self::Start { uuid, date } => actions::book::start(uuid, date).await,
             Self::Finish { uuid, date } => actions::book::finish(uuid, date).await,
             Self::DateReset { uuid } => actions::book::reset_date(uuid).await,
@@ -116,5 +100,36 @@ impl InsertBook {
     }
     fn is_something_missing(&self) -> bool {
         self.title.is_none() || self.author.is_none()
+    }
+}
+
+#[derive(Args, Debug)]
+pub struct UpdateBook {
+    uuid: Uuid,
+    #[arg(long)]
+    title: Option<String>,
+    #[arg(long)]
+    year: Option<i16>,
+    #[arg(long)]
+    date_started: Option<chrono::NaiveDate>,
+    #[arg(long)]
+    date_finished: Option<chrono::NaiveDate>,
+    #[arg(long)]
+    author: Vec<String>,
+    #[arg(long)]
+    tag: Vec<String>,
+}
+impl UpdateBook {
+    async fn execute(self) -> Result<()> {
+        actions::book::update(
+            self.uuid,
+            self.title,
+            self.year,
+            self.date_started,
+            self.date_finished,
+            &self.author,
+            &self.tag,
+        )
+        .await
     }
 }
