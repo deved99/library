@@ -67,7 +67,7 @@ impl InsertBook {
         // Ensure the choosen author exists, else create it
         let author = match db::Author::exists(&author).await? {
             Some(a) => a,
-            None => db::Author::new(&author).await?,
+            None => db::Author::new(&author, None).await?,
         };
         // Finally insert
         actions::book::insert(&title, &author, self.year, &self.tag).await

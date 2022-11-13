@@ -13,13 +13,14 @@ pub struct Author {
 }
 impl Author {
     /// Create a new Author, writing it to the database.
-    pub async fn new(name: &str) -> Result<Self> {
+    pub async fn new(display_name: &str, order_name: Option<&str>) -> Result<Self> {
         let db = get_pool().await?;
         let result = sqlx::query_as!(
             Self,
-            "INSERT INTO authors (display_name,order_name) VALUES ($1, $1)
+            "INSERT INTO authors (display_name,order_name) VALUES ($1, $2)
              RETURNING uuid, display_name, order_name",
-            name
+            display_name,
+            order_name.unwrap_or(display_name)
         )
         .fetch_one(db)
         .await?;
@@ -46,6 +47,17 @@ impl Author {
         .await?;
         Ok(result)
     }
+    pub async fn from_uuid(uuid: Uuid) -> Result<Self> {
+        let db = get_pool().await?;
+        let result = sqlx::query_as!(
+            Self,
+            "SELECT uuid, display_name, order_name FROM authors WHERE uuid = $1",
+            uuid
+        )
+        .fetch_one(db)
+        .await?;
+        Ok(result)
+    }
     pub async fn list() -> Result<Vec<Self>> {
         let db = get_pool().await?;
         let results = sqlx::query_as!(Self, "SELECT uuid, display_name, order_name FROM authors")
@@ -57,14 +69,34 @@ impl Author {
         self.uuid
     }
     // Update
+    pub fn update_display_name(&mut self, display_name: &str) {
+        self.display_name = display_name.to_string();
+    }
+    pub fn update_order_name(&mut self, order_name: &str) {
+        self.order_name = order_name.to_string();
+    }
     // // Helpers
-    async fn update(&self) -> Result<()> {
+    pub async fn save(&self) -> Result<()> {
         let db = get_pool().await?;
         sqlx::query!(
             "UPDATE authors SET display_name = $2, order_name = $3 WHERE uuid = $1",
             self.uuid,
             &self.display_name,
             &self.order_name,
+        )
+        .execute(db)
+        .await?;
+        Ok(())
+    }
+
+    // DELETE //
+
+    pub async fn delete(&self) -> Result<()> {
+        let db = get_pool().await?;
+        sqlx::query!(
+            "DELETE FROM authors
+             WHERE uuid = $1",
+            self.uuid
         )
         .execute(db)
         .await?;

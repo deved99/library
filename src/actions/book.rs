@@ -1,8 +1,7 @@
 use crate::db;
-use crate::db::Author;
 use crate::Result;
 use chrono::{self, NaiveDate};
-use futures::future::{join_all, try_join_all};
+use futures::future::try_join_all;
 use std::ops::Deref;
 use uuid::Uuid;
 
@@ -71,7 +70,7 @@ pub async fn update(
                 Some(a) => db::AuthorBook::write_new(a.uuid(), uuid).await?,
                 None => {
                     log::warn!("Creating author {}.", author_name.deref());
-                    let author = db::Author::new(author_name).await?;
+                    let author = db::Author::new(author_name, None).await?;
                     db::AuthorBook::write_new(author.uuid(), uuid).await?
                 }
             };
