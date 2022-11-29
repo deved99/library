@@ -1,2 +1,2 @@
 # library
-Project used for learning the very basics of databases.
+Project I used for learning the very basics of databases.
